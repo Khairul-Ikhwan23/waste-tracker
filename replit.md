@@ -92,7 +92,7 @@ The application follows a full-stack monorepo architecture with clear separation
 
 ## Recent Changes
 
-- January 08, 2025: Enhanced dashboard with Brunei-specific features
+- January 08, 2025: Enhanced dashboard with Brunei-specific features and user role system
   - Added Pickup Requests page with form validation and Brunei locations
   - Created Route Planner for optimizing waste collection routes
   - Built Recycling Metrics dashboard with performance tracking
@@ -100,6 +100,11 @@ The application follows a full-stack monorepo architecture with clear separation
   - Added notifications system with real-time alerts
   - Integrated Brunei districts and locations data
   - Updated navigation with new functional pages
+  - Implemented comprehensive user role management system
+  - Added role switcher component for switching between Household, Business, Waste Operator, and Admin roles
+  - Created user-centric pages: User Profile, Settings, Pickup History, and EcoRewards
+  - Added mobile-optimized CSS classes for better accessibility
+  - Integrated UserContext for state management across roles
 
 ## Changelog
 

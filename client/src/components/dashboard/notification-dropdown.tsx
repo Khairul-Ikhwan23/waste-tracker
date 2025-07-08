@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Bell, Clock, Info, AlertTriangle } from "lucide-react";
 import { sampleNotifications, type Notification } from "@/lib/data";
+import { useUser } from "@/contexts/UserContext";
 
 export default function NotificationDropdown() {
   const [notifications, setNotifications] = useState<Notification[]>(sampleNotifications);

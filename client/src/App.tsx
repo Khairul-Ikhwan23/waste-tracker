@@ -3,11 +3,16 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { UserProvider } from "@/contexts/UserContext";
 import Dashboard from "@/pages/dashboard";
 import PickupRequests from "@/pages/pickup-requests";
 import RoutePlanner from "@/pages/route-planner";
 import RecyclingMetrics from "@/pages/recycling-metrics";
 import EnvironmentalReports from "@/pages/environmental-reports";
+import UserProfile from "@/pages/user-profile";
+import UserSettings from "@/pages/user-settings";
+import PickupHistory from "@/pages/pickup-history";
+import EcoRewards from "@/pages/eco-rewards";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -19,6 +24,10 @@ function Router() {
       <Route path="/route-planner" component={RoutePlanner} />
       <Route path="/recycling-metrics" component={RecyclingMetrics} />
       <Route path="/environmental-reports" component={EnvironmentalReports} />
+      <Route path="/profile" component={UserProfile} />
+      <Route path="/settings" component={UserSettings} />
+      <Route path="/pickup-history" component={PickupHistory} />
+      <Route path="/eco-rewards" component={EcoRewards} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -27,10 +36,12 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Router />
-      </TooltipProvider>
+      <UserProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+        </TooltipProvider>
+      </UserProvider>
     </QueryClientProvider>
   );
 }

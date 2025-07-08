@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useUser } from "@/contexts/UserContext";
 import Sidebar from "@/components/dashboard/sidebar";
 import StatsCards from "@/components/dashboard/stats-cards";
 import WasteChart from "@/components/dashboard/waste-chart";
 import RecentActivity from "@/components/dashboard/recent-activity";
 import QuickActions from "@/components/dashboard/quick-actions";
 import NotificationDropdown from "@/components/dashboard/notification-dropdown";
+import RoleSwitcher from "@/components/dashboard/role-switcher";
 import { Button } from "@/components/ui/button";
 import { Plus, Menu, X } from "lucide-react";
 import { useLocation } from "wouter";
@@ -14,6 +16,7 @@ export default function Dashboard() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
   const [, navigate] = useLocation();
+  const { currentUser } = useUser();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -59,7 +62,7 @@ export default function Dashboard() {
               <div className="flex items-center">
                 <div className="ml-12 lg:ml-0">
                   <h1 className="text-2xl font-bold text-gray-900">
-                    Welcome to SBNone Smart Waste Dashboard
+                    Welcome, {currentUser.name} ({currentUser.role})
                   </h1>
                   <p className="text-sm text-gray-600 mt-1">
                     Monitor your environmental impact and manage waste efficiently
@@ -67,6 +70,7 @@ export default function Dashboard() {
                 </div>
               </div>
               <div className="flex items-center space-x-4">
+                <RoleSwitcher />
                 <NotificationDropdown />
                 <Button 
                   className="green-primary hover:bg-green-600 text-white"

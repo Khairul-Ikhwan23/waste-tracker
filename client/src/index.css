@@ -2,6 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Mobile-optimized styles */
+@media (max-width: 768px) {
+  .mobile-responsive {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+  
+  .mobile-touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .mobile-spacing {
+    padding: 1rem;
+  }
+  
+  .mobile-text-size {
+    font-size: 1rem;
+  }
+}
+
 :root {
   --background: hsl(0, 0%, 100%);
   --foreground: hsl(20, 14.3%, 4.1%);

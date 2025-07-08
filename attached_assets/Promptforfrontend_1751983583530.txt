@@ -1,0 +1,96 @@
+Smart Waste Management – User Role System (Frontend Functional with Dummy Data)
+
+Goal:
+Create a mobile-optimized frontend module in HTML, CSS, and JavaScript for a Smart Waste Management web app (SBNone). This module will handle the "user-side" features, including roles, profile management, and settings. No backend is needed, but functionality must work using dummy data (e.g. local JS objects).
+
+Core User Roles (4):
+- Household / Normal Users
+- Businesses (e.g., shops, restaurants)
+- Operators (waste collection companies)
+- Admin (oversees users and reports)
+
+General Requirements:
+- Responsive layout that works seamlessly on mobile (≤768px) and desktop
+- Navigation layout consistent with the existing MVP (sidebar on desktop, collapsible hamburger menu on mobile)
+- Include role switcher at the top to simulate different views
+- Only English UI for now
+
+Pages / Sections to Implement:
+
+1. Role Switcher Panel (Persistent Header):
+- Top navigation bar includes a dropdown or segmented control with options:
+  [ Household ] [ Business ] [ Operator ] [ Admin ]
+- Switching updates the view (shows relevant data and permissions)
+- On mobile, this becomes a dropdown or toggle switch inside the collapsible nav
+
+2. User Profile Page (profile.html)
+- Show user profile card with:
+  - Profile picture (use static avatar for now)
+  - Full name
+  - Email
+  - Contact number (editable)
+  - Address (editable dropdown or text input)
+  - Preferred waste types (e.g., recyclables, food, bulky)
+  - Bin ownership: "240L MSW", "Recyclables", "Food Waste (pilot)"
+- "Edit Profile" button toggles editable fields
+- "Save Changes" updates dummy JS object
+
+3. Settings Page (settings.html)
+- Allow editing:
+  - Notification preference (on/off toggle)
+  - Contact number and address (same as profile)
+  - Reward opt-in (checkbox or switch)
+- All changes reflect in the local user object
+- Add a dummy “Delete Account” button (non-functional)
+
+4. Pickup History (pickup-history.html)
+- Display table or cards of previous pickups:
+  - Date, Waste Type, Status (Completed, Missed)
+  - CO₂ saved and volume (kg)
+- Filter by waste type or date range
+
+5. EcoRewards Page (rewards.html)
+- Show user's EcoPoints balance (e.g., 245 points)
+- List of rewards with sample icons/images:
+  - 10% discount at EcoMart (100 pts)
+  - $5 voucher at Gadong Cafe (150 pts)
+- "Redeem" buttons (non-functional for now)
+- Leaderboard (optional): Top 5 users by points
+
+6. Notifications Panel
+- Notification bell icon in header
+- Dropdown list or modal:
+  - “Reminder: Pickup scheduled for tomorrow”
+  - “New recycling partner in Jerudong”
+  - “Waste education event in Kg Ayer this weekend”
+- Simulate with dummy data array of notifications
+
+Mobile Optimization Details (Important):
+- Use CSS Flexbox or Grid for all layouts
+- Sidebar becomes collapsible hamburger menu on mobile
+- Use media queries:
+  - ≤768px = mobile
+  - Show icons and reduce text where needed
+- Forms stack vertically on small screens
+- Tap targets ≥44px height
+- Use native select/date inputs for mobile devices
+- Maintain good color contrast for outdoor visibility
+
+Data Management:
+- Store user info, pickup history, notifications, and rewards as hardcoded JS objects or arrays
+- Role switching changes the data shown using these dummy structures
+- No backend, no login system — everything works on the front-end
+
+File Structure:
+- index.html (or dashboard.html)
+- profile.html
+- settings.html
+- pickup-history.html
+- rewards.html
+- style.css
+- script.js
+- /assets (icons, avatar, reward images)
+- data.js (optional for user role simulation)
+
+Final Output:
+A complete, front-end only module that visually and functionally represents user-side functionality in a Smart Waste Management system for Brunei. Fully mobile responsive and simulating interactivity with dummy data. Ready to integrate with future backend.

@@ -9,7 +9,10 @@ import {
   X,
   Route,
   TrendingUp,
-  Leaf
+  Leaf,
+  User,
+  History,
+  Gift
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
@@ -26,6 +29,9 @@ const navigationItems = [
   { name: "Route Planner", icon: Route, path: "/route-planner" },
   { name: "Recycling Metrics", icon: TrendingUp, path: "/recycling-metrics" },
   { name: "Environmental Reports", icon: Leaf, path: "/environmental-reports" },
+  { name: "Profile", icon: User, path: "/profile" },
+  { name: "Pickup History", icon: History, path: "/pickup-history" },
+  { name: "EcoRewards", icon: Gift, path: "/eco-rewards" },
   { name: "Settings", icon: Settings, path: "/settings" },
 ];
 

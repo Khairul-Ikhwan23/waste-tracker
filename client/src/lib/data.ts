@@ -32,7 +32,8 @@ export const WASTE_TYPES = [
 export const USER_TYPES = [
   'Household',
   'Business',
-  'Waste Operator'
+  'Waste Operator',
+  'Admin'
 ];
 
 export interface PickupRequest {
@@ -299,3 +300,206 @@ export const environmentalData = {
     { month: 'Jan', recycled: 312, total: 450 }
   ]
 };
+
+// User Profile and Role Management
+export interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  role: 'Household' | 'Business' | 'Waste Operator' | 'Admin';
+  avatar: string;
+  preferredWasteTypes: string[];
+  binOwnership: string[];
+  ecoPoints: number;
+  notifications: boolean;
+  rewardOptIn: boolean;
+}
+
+export interface PickupHistory {
+  id: string;
+  date: string;
+  wasteType: string;
+  status: 'Completed' | 'Missed' | 'Scheduled';
+  volume: number;
+  carbonSaved: number;
+  location: string;
+}
+
+export interface EcoReward {
+  id: string;
+  title: string;
+  description: string;
+  pointsCost: number;
+  category: string;
+  available: boolean;
+  icon: string;
+}
+
+// Default user profiles for each role
+export const defaultUserProfiles: Record<string, UserProfile> = {
+  Household: {
+    id: '1',
+    name: 'Ahmad Rahman',
+    email: 'ahmad.rahman@email.com',
+    phone: '+673 888 1234',
+    address: 'Kiulap Plaza, Brunei-Muara',
+    role: 'Household',
+    avatar: '👨‍👩‍👧‍👦',
+    preferredWasteTypes: ['MSW (Municipal Solid Waste)', 'Recyclables', 'Food Waste'],
+    binOwnership: ['240L MSW', 'Recyclables', 'Food Waste (pilot)'],
+    ecoPoints: 245,
+    notifications: true,
+    rewardOptIn: true
+  },
+  Business: {
+    id: '2',
+    name: 'Siti Nurhaliza',
+    email: 'siti@kiulapmart.com',
+    phone: '+673 888 5678',
+    address: 'Gadong Central, Brunei-Muara',
+    role: 'Business',
+    avatar: '🏪',
+    preferredWasteTypes: ['MSW (Municipal Solid Waste)', 'Recyclables', 'Electronic Waste'],
+    binOwnership: ['1100L MSW', '660L Recyclables', 'Electronic Waste Container'],
+    ecoPoints: 890,
+    notifications: true,
+    rewardOptIn: true
+  },
+  'Waste Operator': {
+    id: '3',
+    name: 'Mohd Hafiz',
+    email: 'hafiz@greenwaste.bn',
+    phone: '+673 888 9012',
+    address: 'Seria Industrial Area, Belait',
+    role: 'Waste Operator',
+    avatar: '🚛',
+    preferredWasteTypes: ['All Types'],
+    binOwnership: ['Collection Vehicle', 'Sorting Equipment'],
+    ecoPoints: 1520,
+    notifications: true,
+    rewardOptIn: false
+  },
+  Admin: {
+    id: '4',
+    name: 'Dayang Hajah Zainab',
+    email: 'admin@sbnone.gov.bn',
+    phone: '+673 888 3456',
+    address: 'Government Complex, Bandar Seri Begawan',
+    role: 'Admin',
+    avatar: '👩‍💼',
+    preferredWasteTypes: ['All Types'],
+    binOwnership: ['System Access'],
+    ecoPoints: 0,
+    notifications: true,
+    rewardOptIn: false
+  }
+};
+
+// Sample pickup history data
+export const samplePickupHistory: PickupHistory[] = [
+  {
+    id: '1',
+    date: '2025-01-08',
+    wasteType: 'MSW (Municipal Solid Waste)',
+    status: 'Completed',
+    volume: 25,
+    carbonSaved: 5.2,
+    location: 'Kiulap Plaza'
+  },
+  {
+    id: '2',
+    date: '2025-01-06',
+    wasteType: 'Recyclables',
+    status: 'Completed',
+    volume: 15,
+    carbonSaved: 8.5,
+    location: 'Kiulap Plaza'
+  },
+  {
+    id: '3',
+    date: '2025-01-04',
+    wasteType: 'Food Waste',
+    status: 'Completed',
+    volume: 12,
+    carbonSaved: 3.8,
+    location: 'Kiulap Plaza'
+  },
+  {
+    id: '4',
+    date: '2025-01-02',
+    wasteType: 'MSW (Municipal Solid Waste)',
+    status: 'Missed',
+    volume: 0,
+    carbonSaved: 0,
+    location: 'Kiulap Plaza'
+  },
+  {
+    id: '5',
+    date: '2025-01-10',
+    wasteType: 'Recyclables',
+    status: 'Scheduled',
+    volume: 20,
+    carbonSaved: 0,
+    location: 'Kiulap Plaza'
+  }
+];
+
+// Sample eco rewards
+export const sampleEcoRewards: EcoReward[] = [
+  {
+    id: '1',
+    title: '10% Discount at EcoMart',
+    description: 'Save on eco-friendly products at participating EcoMart stores',
+    pointsCost: 100,
+    category: 'Shopping',
+    available: true,
+    icon: '🛒'
+  },
+  {
+    id: '2',
+    title: '$5 Voucher at Gadong Cafe',
+    description: 'Enjoy a discount on food and beverages',
+    pointsCost: 150,
+    category: 'Food & Beverage',
+    available: true,
+    icon: '☕'
+  },
+  {
+    id: '3',
+    title: 'Free Movie Ticket',
+    description: 'Complimentary movie ticket at Times Cinema',
+    pointsCost: 300,
+    category: 'Entertainment',
+    available: true,
+    icon: '🎬'
+  },
+  {
+    id: '4',
+    title: 'Eco-Friendly Tote Bag',
+    description: 'Reusable shopping bag made from recycled materials',
+    pointsCost: 200,
+    category: 'Merchandise',
+    available: false,
+    icon: '👜'
+  },
+  {
+    id: '5',
+    title: 'Plant a Tree Certificate',
+    description: 'Sponsor a tree planting in Brunei forest reserve',
+    pointsCost: 500,
+    category: 'Environmental',
+    available: true,
+    icon: '🌱'
+  }
+];
+
+// Leaderboard data
+export const ecoLeaderboard = [
+  { rank: 1, name: 'Siti Nurhaliza', points: 890, role: 'Business' },
+  { rank: 2, name: 'Ahmad Rahman', points: 245, role: 'Household' },
+  { rank: 3, name: 'Haji Sulaiman', points: 189, role: 'Household' },
+  { rank: 4, name: 'Green Solutions Ltd', points: 156, role: 'Business' },
+  { rank: 5, name: 'Fatimah Abdullah', points: 134, role: 'Household' }
+];
