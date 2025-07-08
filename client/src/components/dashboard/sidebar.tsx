@@ -6,9 +6,13 @@ import {
   Coins, 
   Settings, 
   Shield,
-  X 
+  X,
+  Route,
+  TrendingUp,
+  Leaf
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLocation } from "wouter";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -17,14 +21,17 @@ interface SidebarProps {
 }
 
 const navigationItems = [
-  { name: "Dashboard", icon: BarChart3, active: true },
-  { name: "Pickup Requests", icon: ClipboardList, active: false },
-  { name: "Waste Reports", icon: FileText, active: false },
-  { name: "EcoRewards", icon: Coins, active: false },
-  { name: "Settings", icon: Settings, active: false },
+  { name: "Dashboard", icon: BarChart3, path: "/dashboard" },
+  { name: "Pickup Requests", icon: ClipboardList, path: "/pickup-requests" },
+  { name: "Route Planner", icon: Route, path: "/route-planner" },
+  { name: "Recycling Metrics", icon: TrendingUp, path: "/recycling-metrics" },
+  { name: "Environmental Reports", icon: Leaf, path: "/environmental-reports" },
+  { name: "Settings", icon: Settings, path: "/settings" },
 ];
 
 export default function Sidebar({ isOpen, onClose, isMobile }: SidebarProps) {
+  const [location, navigate] = useLocation();
+
   return (
     <div
       className={cn(
@@ -60,12 +67,17 @@ export default function Sidebar({ isOpen, onClose, isMobile }: SidebarProps) {
         <div className="px-4 space-y-2">
           {navigationItems.map((item) => {
             const Icon = item.icon;
+            const isActive = location === item.path || (location === "/" && item.path === "/dashboard");
             return (
               <button
                 key={item.name}
+                onClick={() => {
+                  navigate(item.path);
+                  if (isMobile) onClose();
+                }}
                 className={cn(
                   "group flex items-center px-3 py-2 text-sm font-medium rounded-lg w-full text-left transition-colors",
-                  item.active
+                  isActive
                     ? "green-light text-green-primary"
                     : "text-gray-600 hover:bg-gray-50 hover:text-green-primary"
                 )}
@@ -73,7 +85,7 @@ export default function Sidebar({ isOpen, onClose, isMobile }: SidebarProps) {
                 <Icon
                   className={cn(
                     "mr-3 h-5 w-5",
-                    item.active
+                    isActive
                       ? "text-green-primary"
                       : "text-gray-400 group-hover:text-green-primary"
                   )}

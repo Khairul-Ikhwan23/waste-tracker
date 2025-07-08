@@ -5,12 +5,15 @@ import StatsCards from "@/components/dashboard/stats-cards";
 import WasteChart from "@/components/dashboard/waste-chart";
 import RecentActivity from "@/components/dashboard/recent-activity";
 import QuickActions from "@/components/dashboard/quick-actions";
+import NotificationDropdown from "@/components/dashboard/notification-dropdown";
 import { Button } from "@/components/ui/button";
 import { Plus, Menu, X } from "lucide-react";
+import { useLocation } from "wouter";
 
 export default function Dashboard() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
+  const [, navigate] = useLocation();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -64,7 +67,11 @@ export default function Dashboard() {
                 </div>
               </div>
               <div className="flex items-center space-x-4">
-                <Button className="green-primary hover:bg-green-600 text-white">
+                <NotificationDropdown />
+                <Button 
+                  className="green-primary hover:bg-green-600 text-white"
+                  onClick={() => navigate("/pickup-requests")}
+                >
                   <Plus className="w-4 h-4 mr-2" />
                   Request New Pickup
                 </Button>

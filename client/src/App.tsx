@@ -4,6 +4,10 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Dashboard from "@/pages/dashboard";
+import PickupRequests from "@/pages/pickup-requests";
+import RoutePlanner from "@/pages/route-planner";
+import RecyclingMetrics from "@/pages/recycling-metrics";
+import EnvironmentalReports from "@/pages/environmental-reports";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -11,6 +15,10 @@ function Router() {
     <Switch>
       <Route path="/" component={Dashboard} />
       <Route path="/dashboard" component={Dashboard} />
+      <Route path="/pickup-requests" component={PickupRequests} />
+      <Route path="/route-planner" component={RoutePlanner} />
+      <Route path="/recycling-metrics" component={RecyclingMetrics} />
+      <Route path="/environmental-reports" component={EnvironmentalReports} />
       <Route component={NotFound} />
     </Switch>
   );

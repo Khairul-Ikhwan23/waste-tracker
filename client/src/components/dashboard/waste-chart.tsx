@@ -1,14 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-
-const wasteData = [
-  { name: "Organic", value: 45, color: "#43A047" },
-  { name: "Plastic", value: 30, color: "#66BB6A" },
-  { name: "Paper", value: 15, color: "#A5D6A7" },
-  { name: "Glass", value: 8, color: "#C8E6C9" },
-  { name: "Metal", value: 2, color: "#E8F5E8" }
-];
+import { wasteBreakdown } from "@/lib/data";
 
 export default function WasteChart() {
   return (
@@ -33,12 +26,12 @@ export default function WasteChart() {
       <CardContent>
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={wasteData}>
+            <BarChart data={wasteBreakdown}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip 
-                formatter={(value) => [`${value}%`, "Percentage"]}
+                formatter={(value) => [`${value}kg`, "Volume"]}
                 labelStyle={{ color: '#374151' }}
               />
               <Bar 

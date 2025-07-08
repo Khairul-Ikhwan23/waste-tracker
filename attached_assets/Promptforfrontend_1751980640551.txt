@@ -1,0 +1,86 @@
+
+Brunei-Based Smart Waste Management Dashboard (Functional Frontend with Dummy Data)
+
+Build a fully functional front-end web dashboard for a Brunei-based Smart Waste Management app called "SBNone" using only HTML, CSS, and JavaScript. All features should simulate interactivity using predefined dummy data (stored in JS arrays or objects). No backend is needed. The app must work inside Replit using a standard HTML/CSS/JS template.
+
+1. Visual Design:
+- Use green tones: #43A047, #66BB6A, #A5D6A7, with white/gray backgrounds
+- Font: Poppins or Roboto from Google Fonts
+- Responsive layout with a sidebar for desktop and a collapsible hamburger menu on mobile
+- Clean UI: rounded cards, shadows, consistent padding
+
+2. Dummy Data (hardcoded in JS):
+- Districts: Brunei-Muara, Belait, Tutong, Temburong
+- Sample pickups: 5–10 objects with fields like {name, address, type, date, zone}
+- Sample users: {type: "Household", "Business", "Waste Operator"}
+- Waste types: MSW, Recyclables, Bulky, Food
+- Reports: recycling rates, CO2 saved, kg diverted
+
+3. Core Functional Pages:
+
+3.1 Dashboard (index.html):
+- Show 4 info cards:
+    • Total Pickups (sum from dummy array)
+    • Waste Diverted (random kg total)
+    • Recycling Rate (% from data)
+    • Carbon Impact (tons CO2)
+- Include a bar or pie chart (use Chart.js) showing waste breakdown
+- Activity feed that updates when new pickups are added
+
+3.2 Pickup Requests (pickup.html):
+- Form with inputs:
+    • Name (text)
+    • Address (dropdown: Kiulap, Gadong, Jerudong, Seria, Rimba, Kg Ayer)
+    • Waste Type (dropdown)
+    • Date and Time
+- On submit:
+    • Validate input
+    • Push data to pickup array
+    • Display updated list of upcoming pickups below the form
+
+3.3 Route Planner (routes.html):
+- Group pickups by district
+- Display a table:
+    • Pickup ID, Location, Waste Type, Zone, Time
+- “Plan Route” button:
+    • Sort and group pickups by zone and earliest time
+- Add static map image or Leaflet.js placeholder
+
+3.4 Recycling Metrics (metrics.html):
+- Show a table with user/org, waste type, volume (kg), recycled? (Y/N)
+- Include dropdown filter by waste type or district
+- Summary cards: Most Recycled Waste, Average Recycling Rate
+
+3.5 Environmental Reports (impact.html):
+- Display estimated carbon savings and landfill diversion totals
+- Render fake monthly report based on data
+- “Download Report” button (downloads a .txt or opens a modal)
+
+3.6 User Profiles & Notifications:
+- Role selector (buttons or dropdown) to switch between Household, Business, Operator views
+- Role changes what content is shown (e.g., dashboard shows different data)
+- Bell icon in navbar; clicking opens a dropdown of 3 dummy alerts
+    • “Reminder: Pickup in Gadong tomorrow at 10 AM”
+    • “Community cleanup in Kg Ayer this weekend”
+
+4. File Structure:
+- index.html, pickup.html, routes.html, metrics.html, impact.html
+- style.css
+- script.js (shared or per-page)
+- assets/ (icons, static images, Brunei map)
+- Optionally: data.js to hold sample data
+
+5. Libraries:
+- Chart.js (for charts)
+- Leaflet.js (optional for maps)
+- Font Awesome (for icons)
+
+6. Final Requirements:
+- Mobile-friendly: Flexbox or Grid layout
+- Sidebar collapses to mobile menu
+- All features work using dummy JS data
+- No backend, PHP, or database
+- Designed for Brunei context with accurate zone names and addresses
+
+Final Goal:
+An interactive, Brunei-localized waste management dashboard with working UI and logic powered by dummy data — suitable for demonstration, Replit deployment, and future backend expansion.

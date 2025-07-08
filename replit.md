@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a modern web application for smart waste management, built as a React-based dashboard with Express.js backend. The system provides a clean, responsive interface for tracking waste collection, recycling metrics, and environmental impact data using a green-themed design palette.
+This is a modern web application for smart waste management specifically designed for Brunei, built as a React-based dashboard with Express.js backend. The system provides a clean, responsive interface for tracking waste collection, recycling metrics, and environmental impact data using a green-themed design palette. The application includes Brunei-specific locations, districts, and localized features for managing waste collection across Brunei-Muara, Belait, Tutong, and Temburong.
 
 ## System Architecture
 
@@ -90,9 +90,21 @@ The application follows a full-stack monorepo architecture with clear separation
 **Solution**: TanStack Query
 **Rationale**: Handles caching, background updates, and error states automatically
 
+## Recent Changes
+
+- January 08, 2025: Enhanced dashboard with Brunei-specific features
+  - Added Pickup Requests page with form validation and Brunei locations
+  - Created Route Planner for optimizing waste collection routes
+  - Built Recycling Metrics dashboard with performance tracking
+  - Implemented Environmental Reports with carbon impact calculations
+  - Added notifications system with real-time alerts
+  - Integrated Brunei districts and locations data
+  - Updated navigation with new functional pages
+
 ## Changelog
 
 - July 06, 2025. Initial setup
+- January 08, 2025. Added Brunei-specific features and comprehensive dashboard pages
 
 ## User Preferences
 

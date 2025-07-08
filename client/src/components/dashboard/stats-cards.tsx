@@ -1,10 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Trash2, Scale, Sparkles, Users } from "lucide-react";
+import { dashboardStats } from "@/lib/data";
 
 const stats = [
   {
     title: "Total Pickups This Month",
-    value: "247",
+    value: dashboardStats.totalPickups.toString(),
     change: "+12% from last month",
     icon: Trash2,
     color: "green-light",
@@ -12,7 +13,7 @@ const stats = [
   },
   {
     title: "Total Waste Diverted",
-    value: "3,450 kg",
+    value: `${dashboardStats.wasteDiverted.toLocaleString()} kg`,
     change: "+8% from last month",
     icon: Scale,
     color: "green-light",
@@ -20,7 +21,7 @@ const stats = [
   },
   {
     title: "Carbon Credits Earned",
-    value: "156",
+    value: dashboardStats.carbonImpact.toString(),
     change: "+15% from last month",
     icon: Sparkles,
     color: "green-light",
