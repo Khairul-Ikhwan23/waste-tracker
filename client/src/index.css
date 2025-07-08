@@ -59,6 +59,69 @@
     margin-bottom: 1rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
+  
+  /* Responsive header adjustments */
+  .mobile-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .mobile-header h1 {
+    font-size: 1.25rem;
+    line-height: 1.5rem;
+  }
+  
+  /* Better mobile navigation */
+  .mobile-nav {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 50;
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 1rem;
+  }
+  
+  /* Mobile sidebar adjustments */
+  .mobile-sidebar {
+    width: 280px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 40;
+    background: white;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .mobile-sidebar.open {
+    transform: translateX(0);
+  }
+  
+  /* Mobile stats cards */
+  .mobile-stats-card {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .mobile-stats-card h3 {
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .mobile-stats-card .value {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+  
+  .mobile-stats-card .change {
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+  }
 }
 
 /* Tablet optimizations */
