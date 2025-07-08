@@ -2,8 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Mobile-optimized styles */
+/* Mobile-optimized styles - Linear vertical layout */
 @media (max-width: 768px) {
+  /* Prevent horizontal scrolling */
+  * {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  body {
+    overflow-x: hidden;
+  }
+  
   .mobile-responsive {
     font-size: 0.875rem;
     line-height: 1.25rem;
@@ -23,9 +33,12 @@
     font-size: 1rem;
   }
   
-  /* Cards stack vertically on mobile */
-  .mobile-cards {
-    grid-template-columns: 1fr;
+  /* All cards stack vertically on mobile - NO HORIZONTAL LAYOUT */
+  .mobile-cards, 
+  .grid {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
   }
   
   /* Buttons are full width on mobile */
@@ -58,54 +71,27 @@
     padding: 1rem;
     margin-bottom: 1rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    width: 100%;
   }
   
-  /* Responsive header adjustments */
-  .mobile-header {
+  /* Linear mobile layout */
+  .mobile-linear {
+    display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    width: 100%;
     gap: 1rem;
   }
   
-  .mobile-header h1 {
-    font-size: 1.25rem;
-    line-height: 1.5rem;
-  }
-  
-  /* Better mobile navigation */
-  .mobile-nav {
+  .mobile-linear > * {
     width: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 50;
-    background: white;
-    border-bottom: 1px solid #e5e7eb;
-    padding: 1rem;
+    flex-shrink: 0;
   }
   
-  /* Mobile sidebar adjustments */
-  .mobile-sidebar {
-    width: 280px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    z-index: 40;
-    background: white;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    transform: translateX(-100%);
-    transition: transform 0.3s ease-in-out;
-  }
-  
-  .mobile-sidebar.open {
-    transform: translateX(0);
-  }
-  
-  /* Mobile stats cards */
+  /* Mobile stats cards - vertical stacking */
   .mobile-stats-card {
     padding: 1rem;
     margin-bottom: 1rem;
+    width: 100%;
   }
   
   .mobile-stats-card h3 {
@@ -121,6 +107,14 @@
   .mobile-stats-card .change {
     font-size: 0.75rem;
     margin-top: 0.25rem;
+  }
+  
+  /* Ensure no horizontal scrolling in any container */
+  .container, 
+  .main, 
+  .content {
+    max-width: 100vw;
+    overflow-x: hidden;
   }
 }
 

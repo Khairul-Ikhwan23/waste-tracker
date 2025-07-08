@@ -156,7 +156,7 @@ export default function StatsCards() {
   const stats = getRoleStats(currentUser.role, roleData);
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
+    <div className="mobile-linear lg:grid lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
       {stats.map((stat) => {
         const Icon = stat.icon;
         return (
