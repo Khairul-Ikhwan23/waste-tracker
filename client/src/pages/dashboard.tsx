@@ -8,18 +8,20 @@ import RecentActivity from "@/components/dashboard/recent-activity";
 import QuickActions from "@/components/dashboard/quick-actions";
 import NotificationDropdown from "@/components/dashboard/notification-dropdown";
 import RoleSwitcher from "@/components/dashboard/role-switcher";
+import OperatorPickupStatus from "@/components/dashboard/operator-pickup-status";
 import { Button } from "@/components/ui/button";
 import { Plus, Menu, X } from "lucide-react";
 import { useLocation } from "wouter";
 
 export default function Dashboard() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const isMobile = useIsMobile();
   const [, navigate] = useLocation();
   const { currentUser } = useUser();
 
   const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
+    setSidebarOpen(!sidebarOpen);
   };
 
   return (
@@ -40,16 +42,16 @@ export default function Dashboard() {
 
       {/* Sidebar */}
       <Sidebar 
-        isOpen={isMobileMenuOpen} 
-        onClose={() => setIsMobileMenuOpen(false)}
+        isOpen={sidebarOpen} 
+        onClose={() => setSidebarOpen(false)}
         isMobile={isMobile}
       />
 
       {/* Mobile Overlay */}
-      {isMobile && isMobileMenuOpen && (
+      {isMobile && sidebarOpen && (
         <div 
           className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
-          onClick={() => setIsMobileMenuOpen(false)}
+          onClick={() => setSidebarOpen(false)}
         />
       )}
 
@@ -61,33 +63,55 @@ export default function Dashboard() {
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center">
                 <div className="ml-12 lg:ml-0">
-                  <h1 className="text-2xl font-bold text-gray-900">
-                    Welcome, {currentUser.name} ({currentUser.role})
-                  </h1>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <h1 className="text-2xl font-bold text-gray-900">
+                      Welcome, {currentUser.name}
+                    </h1>
+                    <div className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
+                      Viewing as: {currentUser.role}
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-600">
                     Monitor your environmental impact and manage waste efficiently
                   </p>
                 </div>
               </div>
               <div className="flex items-center space-x-4">
-                <RoleSwitcher />
-                <NotificationDropdown />
-                <Button 
-                  className="green-primary hover:bg-green-600 text-white"
-                  onClick={() => navigate("/pickup-requests")}
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Request New Pickup
-                </Button>
+                <div className="hidden sm:flex items-center space-x-4">
+                  <RoleSwitcher />
+                  <NotificationDropdown />
+                  <Button 
+                    className="green-primary hover:bg-green-600 text-white"
+                    onClick={() => navigate("/pickup-requests")}
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Request New Pickup
+                  </Button>
+                </div>
+                
+                {/* Mobile Menu */}
+                <div className="sm:hidden flex items-center space-x-2">
+                  <RoleSwitcher />
+                  <NotificationDropdown />
+                  <button
+                    className="p-2 rounded-lg hover:bg-gray-100 mobile-touch-target"
+                    onClick={() => setSidebarOpen(true)}
+                  >
+                    <Menu className="w-6 h-6" />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </header>
 
         {/* Main Dashboard */}
-        <main className="px-4 sm:px-6 lg:px-8 py-8">
+        <main className="px-4 sm:px-6 lg:px-8 py-8 mobile-spacing">
           {/* Stats Cards */}
           <StatsCards />
+
+          {/* Operator-specific Status Update */}
+          <OperatorPickupStatus />
 
           {/* Chart and Recent Activity */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">

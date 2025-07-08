@@ -1,0 +1,97 @@
+ Smart Waste Management – Role-Based Interface Differentiation (Functional Frontend with Dummy Data)
+
+Objective:
+Update the Smart Waste Management frontend (HTML, CSS, JavaScript) to simulate clear, role-based UI and access differences for 4 user types: Household, Business, Operator, and Admin. This will allow stakeholders to see how the app behaves differently depending on who is using it. Use JavaScript and dummy data (no backend) to simulate real interactivity.
+
+Core Roles & Differences:
+
+1. Household (Normal User)
+- Profile: name, address, phone, preferred bins (MSW, Recyclables)
+- Dashboard shows:
+  - Total pickups
+  - CO2 saved
+  - EcoPoints balance
+- Pages visible:
+  - My Profile
+  - Pickup Requests
+  - Pickup History
+  - EcoRewards
+  - Notifications
+- Limited access: cannot see other users or route data
+
+2. Business
+- Profile includes business name, contact person, address
+- Dashboard shows:
+  - Recycling rate (monthly)
+  - Pickup volume (kg)
+  - Impact report summary
+  - Points earned for CSR
+- Pages visible:
+  - Business Profile
+  - Pickup Scheduler
+  - Monthly Reports
+  - EcoRewards
+  - Notifications
+- Access to: Monthly sustainability reports and reward history
+
+3. Operator (Waste Management Crew)
+- No pickup scheduling or rewards
+- Dashboard shows:
+  - Today's pickups
+  - Route list by district
+  - Summary of completed pickups
+- Pages visible:
+  - Route Dashboard
+  - Pickup Table
+  - Simulated Map (static or Leaflet.js)
+  - Service Log
+- Ability to update status: Completed / Missed
+
+4. Admin
+- Full dashboard access
+- Pages visible:
+  - User Overview
+  - Pickup Log (all users)
+  - Reward System Manager
+  - Metrics Dashboard
+- Can view and impersonate other roles
+- Simulated tools: Add/Edit User, View EcoImpact Graphs by District
+
+Role Switcher (Required)
+- Persistent dropdown or segmented control in top nav
+- Switch between Household, Business, Operator, Admin
+- On switch: update navigation menu, dashboard content, and available pages
+- Optionally: display "Viewing as: [Role]" message at the top
+
+Mobile Design (Important)
+- All views must be responsive
+- On mobile (≤768px), use a hamburger menu to collapse side navigation
+- Forms stack vertically
+- Dashboard cards use 1-column layout
+- Charts are touch-friendly (Chart.js or images)
+
+Data Simulation
+- Use local JavaScript objects or arrays to store:
+  - User profile data (per role)
+  - Pickup history per user
+  - Rewards catalog and balance
+  - Notifications (array per user type)
+  - Routing data for operators
+
+Files Required:
+- index.html (landing page, defaults to household)
+- household.html
+- business.html
+- operator.html
+- admin.html
+- profile.html
+- rewards.html
+- history.html
+- routes.html (for operators)
+- style.css
+- script.js
+- data.js (holds dummy role data)
+- assets/ (icons, avatars, sample rewards)
+
+Final Goal:
+A working front-end-only simulation of a role-based smart waste platform. Each user type should see a different interface and different features. Stakeholders can switch roles to understand the functional differences and UI experience per role, all powered by dummy data.

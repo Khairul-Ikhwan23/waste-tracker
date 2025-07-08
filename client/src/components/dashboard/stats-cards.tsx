@@ -1,43 +1,160 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Trash2, Scale, Sparkles, Users } from "lucide-react";
-import { dashboardStats } from "@/lib/data";
+import { Trash2, Scale, Sparkles, Users, Truck, BarChart3, Leaf, Gift, Building, TrendingUp } from "lucide-react";
+import { dashboardStats, roleDashboardData } from "@/lib/data";
+import { useUser } from "@/contexts/UserContext";
 
-const stats = [
-  {
-    title: "Total Pickups This Month",
-    value: dashboardStats.totalPickups.toString(),
-    change: "+12% from last month",
-    icon: Trash2,
-    color: "green-light",
-    iconColor: "text-green-primary"
-  },
-  {
-    title: "Total Waste Diverted",
-    value: `${dashboardStats.wasteDiverted.toLocaleString()} kg`,
-    change: "+8% from last month",
-    icon: Scale,
-    color: "green-light",
-    iconColor: "text-green-primary"
-  },
-  {
-    title: "Carbon Credits Earned",
-    value: dashboardStats.carbonImpact.toString(),
-    change: "+15% from last month",
-    icon: Sparkles,
-    color: "green-light",
-    iconColor: "text-green-primary"
-  },
-  {
-    title: "Active Recyclers",
-    value: "89",
-    change: "+23% from last month",
-    icon: Users,
-    color: "green-light",
-    iconColor: "text-green-primary"
+const getRoleStats = (role: string, roleData: any) => {
+  switch (role) {
+    case 'Household':
+      return [
+        {
+          title: "Total Pickups",
+          value: roleData.totalPickups.toString(),
+          change: "This month",
+          icon: Trash2,
+          color: "green-light",
+          iconColor: "text-green-primary"
+        },
+        {
+          title: "CO₂ Saved",
+          value: `${roleData.carbonSaved} kg`,
+          change: "Environmental impact",
+          icon: Leaf,
+          color: "green-light",
+          iconColor: "text-green-primary"
+        },
+        {
+          title: "EcoPoints",
+          value: roleData.ecoPoints.toString(),
+          change: "Reward balance",
+          icon: Gift,
+          color: "green-light",
+          iconColor: "text-green-primary"
+        },
+        {
+          title: "Next Pickup",
+          value: roleData.nextPickup,
+          change: roleData.binStatus,
+          icon: Scale,
+          color: "green-light",
+          iconColor: "text-green-primary"
+        }
+      ];
+    case 'Business':
+      return [
+        {
+          title: "Recycling Rate",
+          value: `${roleData.recyclingRate}%`,
+          change: `${roleData.monthlyTrend} this month`,
+          icon: TrendingUp,
+          color: "green-light",
+          iconColor: "text-green-primary"
+        },
+        {
+          title: "Pickup Volume",
+          value: `${roleData.pickupVolume} kg`,
+          change: "This month",
+          icon: Scale,
+          color: "green-light",
+          iconColor: "text-green-primary"
+        },
+        {
+          title: "CSR Points",
+          value: roleData.csrPoints.toString(),
+          change: "Corporate rewards",
+          icon: Gift,
+          color: "green-light",
+          iconColor: "text-green-primary"
+        },
+        {
+          title: "Impact Report",
+          value: roleData.impactReport,
+          change: `Grade: ${roleData.sustainabilityScore}`,
+          icon: BarChart3,
+          color: "green-light",
+          iconColor: "text-green-primary"
+        }
+      ];
+    case 'Waste Operator':
+      return [
+        {
+          title: "Today's Pickups",
+          value: roleData.todaysPickups.toString(),
+          change: "Total scheduled",
+          icon: Truck,
+          color: "green-light",
+          iconColor: "text-green-primary"
+        },
+        {
+          title: "Completed",
+          value: roleData.completedPickups.toString(),
+          change: "Successfully processed",
+          icon: Sparkles,
+          color: "green-light",
+          iconColor: "text-green-primary"
+        },
+        {
+          title: "Pending",
+          value: roleData.pendingPickups.toString(),
+          change: "Awaiting collection",
+          icon: Trash2,
+          color: "green-light",
+          iconColor: "text-green-primary"
+        },
+        {
+          title: "Vehicle Status",
+          value: roleData.vehicleStatus,
+          change: `Location: ${roleData.currentLocation}`,
+          icon: Users,
+          color: "green-light",
+          iconColor: "text-green-primary"
+        }
+      ];
+    case 'Admin':
+      return [
+        {
+          title: "Total Users",
+          value: roleData.allUsers.toString(),
+          change: `${roleData.monthlyGrowth} growth`,
+          icon: Users,
+          color: "green-light",
+          iconColor: "text-green-primary"
+        },
+        {
+          title: "System Status",
+          value: roleData.systemMetrics,
+          change: `${roleData.platformStats} uptime`,
+          icon: BarChart3,
+          color: "green-light",
+          iconColor: "text-green-primary"
+        },
+        {
+          title: "Total Impact",
+          value: roleData.totalImpact,
+          change: "Carbon savings",
+          icon: Leaf,
+          color: "green-light",
+          iconColor: "text-green-primary"
+        },
+        {
+          title: "Active Operators",
+          value: roleData.activeOperators.toString(),
+          change: "Currently working",
+          icon: Truck,
+          color: "green-light",
+          iconColor: "text-green-primary"
+        }
+      ];
+    default:
+      return [];
   }
-];
+};
 
 export default function StatsCards() {
+  const { currentUser } = useUser();
+  const roleData = roleDashboardData[currentUser.role as keyof typeof roleDashboardData];
+  const stats = getRoleStats(currentUser.role, roleData);
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       {stats.map((stat) => {

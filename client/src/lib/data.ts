@@ -347,15 +347,15 @@ export const defaultUserProfiles: Record<string, UserProfile> = {
     address: 'Kiulap Plaza, Brunei-Muara',
     role: 'Household',
     avatar: '👨‍👩‍👧‍👦',
-    preferredWasteTypes: ['MSW (Municipal Solid Waste)', 'Recyclables', 'Food Waste'],
-    binOwnership: ['240L MSW', 'Recyclables', 'Food Waste (pilot)'],
+    preferredWasteTypes: ['MSW (Municipal Solid Waste)', 'Recyclables'],
+    binOwnership: ['240L MSW', 'Recyclables'],
     ecoPoints: 245,
     notifications: true,
     rewardOptIn: true
   },
   Business: {
     id: '2',
-    name: 'Siti Nurhaliza',
+    name: 'Kiulap Mart (Siti Nurhaliza)',
     email: 'siti@kiulapmart.com',
     phone: '+673 888 5678',
     address: 'Gadong Central, Brunei-Muara',
@@ -377,7 +377,7 @@ export const defaultUserProfiles: Record<string, UserProfile> = {
     avatar: '🚛',
     preferredWasteTypes: ['All Types'],
     binOwnership: ['Collection Vehicle', 'Sorting Equipment'],
-    ecoPoints: 1520,
+    ecoPoints: 0,
     notifications: true,
     rewardOptIn: false
   },
@@ -497,9 +497,84 @@ export const sampleEcoRewards: EcoReward[] = [
 
 // Leaderboard data
 export const ecoLeaderboard = [
-  { rank: 1, name: 'Siti Nurhaliza', points: 890, role: 'Business' },
+  { rank: 1, name: 'Kiulap Mart (Siti Nurhaliza)', points: 890, role: 'Business' },
   { rank: 2, name: 'Ahmad Rahman', points: 245, role: 'Household' },
   { rank: 3, name: 'Haji Sulaiman', points: 189, role: 'Household' },
   { rank: 4, name: 'Green Solutions Ltd', points: 156, role: 'Business' },
   { rank: 5, name: 'Fatimah Abdullah', points: 134, role: 'Household' }
 ];
+
+// Role-based navigation permissions
+export const rolePermissions = {
+  Household: {
+    canAccess: ['dashboard', 'profile', 'pickup-requests', 'pickup-history', 'eco-rewards', 'settings'],
+    canViewOthers: false,
+    canSchedule: true,
+    canViewRoutes: false,
+    canManageUsers: false,
+    canViewMetrics: false,
+    dashboardStats: ['totalPickups', 'carbonSaved', 'ecoPoints']
+  },
+  Business: {
+    canAccess: ['dashboard', 'profile', 'pickup-requests', 'pickup-history', 'eco-rewards', 'recycling-metrics', 'environmental-reports', 'settings'],
+    canViewOthers: false,
+    canSchedule: true,
+    canViewRoutes: false,
+    canManageUsers: false,
+    canViewMetrics: true,
+    dashboardStats: ['recyclingRate', 'pickupVolume', 'impactReport', 'csrPoints']
+  },
+  'Waste Operator': {
+    canAccess: ['dashboard', 'route-planner', 'pickup-requests', 'settings'],
+    canViewOthers: false,
+    canSchedule: false,
+    canViewRoutes: true,
+    canManageUsers: false,
+    canViewMetrics: false,
+    dashboardStats: ['todaysPickups', 'routeList', 'completedPickups']
+  },
+  Admin: {
+    canAccess: ['dashboard', 'profile', 'pickup-requests', 'pickup-history', 'eco-rewards', 'recycling-metrics', 'environmental-reports', 'route-planner', 'settings'],
+    canViewOthers: true,
+    canSchedule: true,
+    canViewRoutes: true,
+    canManageUsers: true,
+    canViewMetrics: true,
+    dashboardStats: ['allUsers', 'systemMetrics', 'totalImpact', 'platformStats']
+  }
+};
+
+// Role-specific dashboard data
+export const roleDashboardData = {
+  Household: {
+    totalPickups: 12,
+    carbonSaved: 45.2,
+    ecoPoints: 245,
+    nextPickup: '2025-01-10',
+    binStatus: 'Ready for collection'
+  },
+  Business: {
+    recyclingRate: 78,
+    pickupVolume: 1250,
+    impactReport: 'Excellent',
+    csrPoints: 890,
+    monthlyTrend: '+12%',
+    sustainabilityScore: 'A+'
+  },
+  'Waste Operator': {
+    todaysPickups: 24,
+    routeList: ['Kiulap Area', 'Gadong Central', 'Jerudong'],
+    completedPickups: 18,
+    pendingPickups: 6,
+    currentLocation: 'Kiulap Plaza',
+    vehicleStatus: 'Active'
+  },
+  Admin: {
+    allUsers: 1247,
+    systemMetrics: 'Good',
+    totalImpact: '12.8 tons CO₂',
+    platformStats: '94% uptime',
+    activeOperators: 8,
+    monthlyGrowth: '+5.2%'
+  }
+};

@@ -15,7 +15,10 @@ import {
   Gift
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useLocation } from "wouter";
+import { useUser } from "@/contexts/UserContext";
+import { rolePermissions } from "@/lib/data";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -23,20 +26,28 @@ interface SidebarProps {
   isMobile: boolean;
 }
 
-const navigationItems = [
-  { name: "Dashboard", icon: BarChart3, path: "/dashboard" },
-  { name: "Pickup Requests", icon: ClipboardList, path: "/pickup-requests" },
-  { name: "Route Planner", icon: Route, path: "/route-planner" },
-  { name: "Recycling Metrics", icon: TrendingUp, path: "/recycling-metrics" },
-  { name: "Environmental Reports", icon: Leaf, path: "/environmental-reports" },
-  { name: "Profile", icon: User, path: "/profile" },
-  { name: "Pickup History", icon: History, path: "/pickup-history" },
-  { name: "EcoRewards", icon: Gift, path: "/eco-rewards" },
-  { name: "Settings", icon: Settings, path: "/settings" },
+const getAllNavigationItems = () => [
+  { name: "Dashboard", icon: BarChart3, path: "/dashboard", key: "dashboard" },
+  { name: "Pickup Requests", icon: ClipboardList, path: "/pickup-requests", key: "pickup-requests" },
+  { name: "Route Planner", icon: Route, path: "/route-planner", key: "route-planner" },
+  { name: "Recycling Metrics", icon: TrendingUp, path: "/recycling-metrics", key: "recycling-metrics" },
+  { name: "Environmental Reports", icon: Leaf, path: "/environmental-reports", key: "environmental-reports" },
+  { name: "Profile", icon: User, path: "/profile", key: "profile" },
+  { name: "Pickup History", icon: History, path: "/pickup-history", key: "pickup-history" },
+  { name: "EcoRewards", icon: Gift, path: "/eco-rewards", key: "eco-rewards" },
+  { name: "Settings", icon: Settings, path: "/settings", key: "settings" },
 ];
 
 export default function Sidebar({ isOpen, onClose, isMobile }: SidebarProps) {
   const [location, navigate] = useLocation();
+  const { currentUser } = useUser();
+  
+  const allNavigationItems = getAllNavigationItems();
+  const userPermissions = rolePermissions[currentUser.role as keyof typeof rolePermissions];
+  
+  const navigationItems = allNavigationItems.filter(item => 
+    userPermissions.canAccess.includes(item.key)
+  );
 
   return (
     <div

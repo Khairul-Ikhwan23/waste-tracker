@@ -12,6 +12,7 @@
   .mobile-touch-target {
     min-height: 44px;
     min-width: 44px;
+    touch-action: manipulation;
   }
   
   .mobile-spacing {
@@ -20,6 +21,54 @@
   
   .mobile-text-size {
     font-size: 1rem;
+  }
+  
+  /* Cards stack vertically on mobile */
+  .mobile-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  /* Buttons are full width on mobile */
+  .mobile-button {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  /* Larger font sizes for better readability */
+  .mobile-title {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+  
+  /* Better spacing for mobile forms */
+  .mobile-form-spacing {
+    margin-bottom: 1rem;
+  }
+  
+  /* Hide complex charts on mobile, show simplified view */
+  .mobile-hide-chart {
+    display: none;
+  }
+  
+  /* Mobile-friendly table alternatives */
+  .mobile-table-card {
+    display: block;
+    background: white;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .tablet-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .tablet-spacing {
+    padding: 1.5rem;
   }
 }
 

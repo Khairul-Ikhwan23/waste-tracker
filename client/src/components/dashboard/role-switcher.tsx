@@ -25,14 +25,14 @@ export default function RoleSwitcher() {
     <div className="flex items-center space-x-2">
       <span className="text-sm font-medium text-gray-600 hidden sm:block">Role:</span>
       <Select value={currentRole} onValueChange={switchRole}>
-        <SelectTrigger className="w-40 sm:w-48">
+        <SelectTrigger className="w-36 sm:w-48 mobile-touch-target">
           <SelectValue>
             <div className="flex items-center space-x-2">
               {(() => {
                 const Icon = roleIcons[currentRole as keyof typeof roleIcons];
                 return <Icon className="w-4 h-4" />;
               })()}
-              <span className="hidden sm:inline">{currentRole}</span>
+              <span className="hidden sm:inline mobile-text-size">{currentRole}</span>
             </div>
           </SelectValue>
         </SelectTrigger>
@@ -40,7 +40,7 @@ export default function RoleSwitcher() {
           {USER_TYPES.map((role) => {
             const Icon = roleIcons[role as keyof typeof roleIcons];
             return (
-              <SelectItem key={role} value={role}>
+              <SelectItem key={role} value={role} className="mobile-touch-target">
                 <div className="flex items-center space-x-2">
                   <Icon className="w-4 h-4" />
                   <span>{role}</span>
@@ -50,7 +50,7 @@ export default function RoleSwitcher() {
           })}
         </SelectContent>
       </Select>
-      <Badge className={roleColors[currentRole as keyof typeof roleColors]}>
+      <Badge className={`${roleColors[currentRole as keyof typeof roleColors]} hidden sm:inline-flex`}>
         {currentRole}
       </Badge>
     </div>
