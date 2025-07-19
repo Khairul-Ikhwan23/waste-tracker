@@ -1,0 +1,107 @@
+# Prompt for Replit AI Agent
+
+Project context:
+WasteInsightTracker is a full‑stack TypeScript monorepo.
+- Front‑end: Vite + React + TailwindCSS in `client/`
+- Back‑end: Node/Express‐style TypeScript in `server/`, run via `tsx`
+- Shared schema: Drizzle ORM tables in `shared/schema.ts`
+- Sidebar navigation: defined in `components/Sidebar.tsx`, routes wired in your main App
+
+Your tasks:
+
+1. Eliminate horizontal scroll on mobile
+   - In `client/index.html`, ensure:
+     <meta name="viewport" content="width=device-width, initial-scale=1">
+   - In global CSS (e.g. `client/src/index.css`):
+     ```
+     html, body { overflow-x: hidden; }
+     ```
+   - Adjust any Tailwind containers or custom components so they never exceed 100vw on small screens.
+
+2. Add a “Payments” tab
+   - In `components/Sidebar.tsx`, add:
+     ```ts
+     import { CreditCard } from 'lucide-react';
+     // …
+     { name: 'Payments', icon: CreditCard, path: '/payments', key: 'payments' },
+     ```
+   - Create `client/src/pages/Payments.tsx`:
+     ```tsx
+     import React from 'react';
+     export default function Payments() {
+       return (
+         <div className="p-6">
+           <h1 className="text-2xl font-bold mb-4">Payments</h1>
+           {/* TODO: list & record payments */}
+         </div>
+       );
+     }
+     ```
+   - Wire up the route in your router (e.g. `App.tsx`):
+     ```tsx
+     import Payments from './pages/Payments';
+     // …
+     <Route path="/payments" component={Payments} />
+     ```
+   - Back‑end (`server/routes.ts`):
+     ```ts
+     import { db } from './storage';
+     import { payments } from '../shared/schema';
+     app.get('/api/payments', async (req, res) => {
+       const all = await db.select().from(payments);
+       res.json(all);
+     });
+     app.post('/api/payments', async (req, res) => {
+       const data = req.body; // { amount, date, description, … }
+       const inserted = await db.insert(payments).values(data).returning();
+       res.json(inserted);
+     });
+     ```
+   - Schema (`shared/schema.ts`):
+     ```ts
+     export const payments = mysqlTable('payments', {
+       id: serial('id').primaryKey(),
+       amount: decimal('amount', { precision: 10, scale: 2 }).notNull(),
+       date: date('date').notNull(),
+       description: text('description'),
+       createdAt: datetime('created_at').defaultNow(),
+     });
+     ```
+
+3. Use your provided logo in the top sidebar
+   - Place your logo file at `client/src/assets/logo.png`.
+   - In `Sidebar.tsx`:
+     ```ts
+     import Logo from '../assets/logo.png';
+     ```
+   - In the header div (`<div className="flex items-center">`):
+     ```jsx
+     <img src={Logo} alt="Kitar360 Logo" className="h-8 w-auto mr-2" />
+     ```
+
+4. Show an opening splash animation on first load
+   - Create `client/src/components/SplashScreen.tsx`:
+     ```tsx
+     import { useEffect, useState } from 'react';
+     import Logo from '../assets/logo.png';
+     export default function SplashScreen() {
+       const [visible, setVisible] = useState(true);
+       useEffect(() => {
+         const t = setTimeout(() => setVisible(false), 2000);
+         return () => clearTimeout(t);
+       }, []);
+       if (!visible) return null;
+       return (
+         <div className="fixed inset-0 bg-green-500 bg-opacity-50 flex items-center justify-center transition-opacity duration-500">
+           <img src={Logo} alt="Kitar360 Logo" className="h-32 w-auto" />
+         </div>
+       );
+     }
+     ```
+   - In your main app entry (e.g. `App.tsx`), import and render `<SplashScreen />` at the top so it overlays on first visit.
+
+Finally, run your dev server and verify:
+- No horizontal scroll on mobile.
+- “Payments” tab and page work (returns empty arrays initially).
+- Logo appears in the sidebar.
+- Semi‑transparent green splash with logo fades out after about 2 seconds.
