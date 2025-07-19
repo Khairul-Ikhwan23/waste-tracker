@@ -507,7 +507,7 @@ export const ecoLeaderboard = [
 // Role-based navigation permissions
 export const rolePermissions = {
   Household: {
-    canAccess: ['dashboard', 'profile', 'pickup-requests', 'pickup-history', 'eco-rewards', 'settings'],
+    canAccess: ['dashboard', 'profile', 'pickup-requests', 'pickup-history', 'eco-rewards', 'payments', 'settings'],
     canViewOthers: false,
     canSchedule: true,
     canViewRoutes: false,
@@ -516,7 +516,7 @@ export const rolePermissions = {
     dashboardStats: ['totalPickups', 'carbonSaved', 'ecoPoints']
   },
   Business: {
-    canAccess: ['dashboard', 'profile', 'pickup-requests', 'pickup-history', 'eco-rewards', 'recycling-metrics', 'environmental-reports', 'settings'],
+    canAccess: ['dashboard', 'profile', 'pickup-requests', 'pickup-history', 'eco-rewards', 'recycling-metrics', 'environmental-reports', 'payments', 'settings'],
     canViewOthers: false,
     canSchedule: true,
     canViewRoutes: false,
@@ -525,7 +525,7 @@ export const rolePermissions = {
     dashboardStats: ['recyclingRate', 'pickupVolume', 'impactReport', 'csrPoints']
   },
   'Waste Operator': {
-    canAccess: ['dashboard', 'route-planner', 'pickup-requests', 'settings'],
+    canAccess: ['dashboard', 'route-planner', 'pickup-requests', 'payments', 'settings'],
     canViewOthers: false,
     canSchedule: false,
     canViewRoutes: true,
@@ -534,7 +534,7 @@ export const rolePermissions = {
     dashboardStats: ['todaysPickups', 'routeList', 'completedPickups']
   },
   Admin: {
-    canAccess: ['dashboard', 'profile', 'pickup-requests', 'pickup-history', 'eco-rewards', 'recycling-metrics', 'environmental-reports', 'route-planner', 'settings'],
+    canAccess: ['dashboard', 'profile', 'pickup-requests', 'pickup-history', 'eco-rewards', 'recycling-metrics', 'environmental-reports', 'route-planner', 'payments', 'settings'],
     canViewOthers: true,
     canSchedule: true,
     canViewRoutes: true,

@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html, body {
+  overflow-x: hidden;
+}
+
 /* Mobile-optimized styles */
 @media (max-width: 768px) {
   .mobile-responsive {

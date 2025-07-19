@@ -13,7 +13,9 @@ import UserProfile from "@/pages/user-profile";
 import UserSettings from "@/pages/user-settings";
 import PickupHistory from "@/pages/pickup-history";
 import EcoRewards from "@/pages/eco-rewards";
+import Payments from "@/pages/payments";
 import NotFound from "@/pages/not-found";
+import SplashScreen from "@/components/SplashScreen";
 
 function Router() {
   return (
@@ -28,6 +30,7 @@ function Router() {
       <Route path="/settings" component={UserSettings} />
       <Route path="/pickup-history" component={PickupHistory} />
       <Route path="/eco-rewards" component={EcoRewards} />
+      <Route path="/payments" component={Payments} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -38,6 +41,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <UserProvider>
         <TooltipProvider>
+          <SplashScreen />
           <Toaster />
           <Router />
         </TooltipProvider>

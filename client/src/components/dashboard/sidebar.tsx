@@ -13,7 +13,9 @@ import {
   User,
   History,
   Gift,
+  CreditCard,
 } from "lucide-react";
+import Logo from "@/assets/logo.png";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useLocation } from "wouter";
@@ -60,6 +62,7 @@ const getAllNavigationItems = () => [
     key: "pickup-history",
   },
   { name: "EcoRewards", icon: Gift, path: "/eco-rewards", key: "eco-rewards" },
+  { name: "Payments", icon: CreditCard, path: "/payments", key: "payments" },
   { name: "Settings", icon: Settings, path: "/settings", key: "settings" },
 ];
 
@@ -85,7 +88,8 @@ export default function Sidebar({ isOpen, onClose, isMobile }: SidebarProps) {
       {/* Header */}
       <div className="flex items-center justify-between h-16 px-6 green-primary">
         <div className="flex items-center">
-          
+          <img src={Logo} alt="Kitar360 Logo" className="h-8 w-auto mr-2" />
+          <span className="text-white font-bold text-lg">Kitar360</span>
         </div>
         {isMobile && (
           <Button
