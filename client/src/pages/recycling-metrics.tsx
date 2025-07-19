@@ -101,15 +101,13 @@ export default function RecyclingMetrics() {
         {/* Header */}
         <header className="bg-white shadow-sm border-b border-gray-200">
           <div className="px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
+            {/* Desktop Layout */}
+            <div className="hidden sm:flex items-center justify-between h-16">
               <div className="flex items-center">
                 <div className="ml-12 lg:ml-0">
                   <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">Recycling Metrics</h1>
-                  <p className="text-sm text-gray-600 mt-1 hidden sm:block">
+                  <p className="text-sm text-gray-600 mt-1">
                     Monitor recycling performance and environmental impact
-                  </p>
-                  <p className="text-sm text-gray-600 mt-1 sm:hidden">
-                    Monitor recycling
                   </p>
                 </div>
               </div>
@@ -127,6 +125,42 @@ export default function RecyclingMetrics() {
                 </Select>
                 <Select value={selectedDistrict} onValueChange={setSelectedDistrict}>
                   <SelectTrigger className="w-48">
+                    <SelectValue placeholder="All Districts" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Districts</SelectItem>
+                    {BRUNEI_DISTRICTS.map((district) => (
+                      <SelectItem key={district} value={district}>{district}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
+            {/* Mobile Layout */}
+            <div className="sm:hidden py-4 space-y-3">
+              <div className="flex items-center">
+                <div className="ml-12">
+                  <h1 className="text-lg font-bold text-gray-900">Recycling Metrics</h1>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Monitor recycling
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-col gap-3">
+                <Select value={selectedWasteType} onValueChange={setSelectedWasteType}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="All Waste Types" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Waste Types</SelectItem>
+                    {WASTE_TYPES.map((type) => (
+                      <SelectItem key={type} value={type}>{type}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select value={selectedDistrict} onValueChange={setSelectedDistrict}>
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="All Districts" />
                   </SelectTrigger>
                   <SelectContent>

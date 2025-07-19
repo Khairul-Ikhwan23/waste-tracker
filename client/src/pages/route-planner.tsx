@@ -105,15 +105,13 @@ export default function RoutePlanner() {
         {/* Header */}
         <header className="bg-white shadow-sm border-b border-gray-200">
           <div className="px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
+            {/* Desktop Layout */}
+            <div className="hidden sm:flex items-center justify-between h-16">
               <div className="flex items-center">
                 <div className="ml-12 lg:ml-0">
                   <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">Route Planner</h1>
-                  <p className="text-sm text-gray-600 mt-1 hidden sm:block">
+                  <p className="text-sm text-gray-600 mt-1">
                     Optimize pickup routes and manage collections
-                  </p>
-                  <p className="text-sm text-gray-600 mt-1 sm:hidden">
-                    Optimize routes
                   </p>
                 </div>
               </div>
@@ -132,6 +130,38 @@ export default function RoutePlanner() {
                 <Button 
                   onClick={handlePlanRoute}
                   className="green-primary hover:bg-green-600 text-white"
+                >
+                  <Navigation className="w-4 h-4 mr-2" />
+                  Plan Route
+                </Button>
+              </div>
+            </div>
+            
+            {/* Mobile Layout */}
+            <div className="sm:hidden py-4 space-y-3">
+              <div className="flex items-center">
+                <div className="ml-12">
+                  <h1 className="text-lg font-bold text-gray-900">Route Planner</h1>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Optimize routes
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-col gap-3">
+                <Select value={selectedDistrict} onValueChange={setSelectedDistrict}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Districts</SelectItem>
+                    {BRUNEI_DISTRICTS.map((district) => (
+                      <SelectItem key={district} value={district}>{district}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button 
+                  onClick={handlePlanRoute}
+                  className="green-primary hover:bg-green-600 text-white w-full"
                 >
                   <Navigation className="w-4 h-4 mr-2" />
                   Plan Route
