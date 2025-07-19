@@ -32,14 +32,14 @@ export default function QuickActions() {
     // Add role-specific actions
     const roleSpecificActions = [];
 
-    if (currentUser.role === "Business" || currentUser.role === "Admin") {
+    if (currentUser.role === "Business" || currentUser.role === "Waste Operator" || currentUser.role === "Admin") {
       roleSpecificActions.push({
         title: "View Reports",
         icon: FileText,
         color: "bg-blue-600 hover:bg-blue-700",
         textColor: "text-white",
         path: "/environmental-reports",
-        roles: ["Business", "Admin"]
+        roles: ["Business", "Waste Operator", "Admin"]
       });
     }
 
