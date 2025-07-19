@@ -21,12 +21,21 @@ export const payments = pgTable("payments", {
   amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
   date: date("date").notNull(),
   description: text("description"),
+  status: text("status").notNull().default("pending"), // pending, completed, failed, cancelled
+  type: text("type").notNull().default("pickup"), // pickup, subscription, penalty, refund
+  method: text("method").notNull().default("card"), // card, bank_transfer, cash, digital_wallet
+  reference: text("reference"), // transaction reference number
+  dueDate: date("due_date"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const insertPaymentSchema = createInsertSchema(payments).omit({
   id: true,
   createdAt: true,
+}).extend({
+  status: z.enum(["pending", "completed", "failed", "cancelled"]).default("pending"),
+  type: z.enum(["pickup", "subscription", "penalty", "refund"]).default("pickup"),
+  method: z.enum(["card", "bank_transfer", "cash", "digital_wallet"]).default("card"),
 });
 
 export type InsertPayment = z.infer<typeof insertPaymentSchema>;

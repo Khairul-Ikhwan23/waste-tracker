@@ -32,27 +32,82 @@ export class MemStorage implements IStorage {
       {
         amount: "125.50",
         date: "2025-01-15",
-        description: "Monthly waste collection service"
+        description: "Monthly waste collection service",
+        status: "completed",
+        type: "subscription",
+        method: "card",
+        reference: "TXN001234",
+        dueDate: "2025-01-15"
       },
       {
         amount: "75.00",
-        date: "2025-01-10",
-        description: "Recycling bonus payment"
+        date: "2025-01-12",
+        description: "Recycling bonus payment",
+        status: "pending",
+        type: "refund",
+        method: "bank_transfer",
+        reference: "REF567890",
+        dueDate: "2025-01-20"
       },
       {
         amount: "200.00",
-        date: "2025-01-05",
-        description: "Bulk waste disposal fee"
+        date: "2025-01-10",
+        description: "Bulk waste disposal fee",
+        status: "completed",
+        type: "pickup",
+        method: "digital_wallet",
+        reference: "TXN002468",
+        dueDate: "2025-01-10"
       },
       {
         amount: "45.25",
-        date: "2024-12-28",
-        description: "Electronic waste processing"
+        date: "2025-01-08",
+        description: "Electronic waste processing",
+        status: "failed",
+        type: "pickup",
+        method: "card",
+        reference: "TXN003691",
+        dueDate: "2025-01-08"
       },
       {
         amount: "90.00",
-        date: "2024-12-20",
-        description: "Commercial waste pickup"
+        date: "2025-01-05",
+        description: "Commercial waste pickup",
+        status: "completed",
+        type: "pickup",
+        method: "cash",
+        reference: "TXN004820",
+        dueDate: "2025-01-05"
+      },
+      {
+        amount: "50.00",
+        date: "2025-01-03",
+        description: "Late payment penalty",
+        status: "pending",
+        type: "penalty",
+        method: "card",
+        reference: "PEN001234",
+        dueDate: "2025-01-25"
+      },
+      {
+        amount: "180.00",
+        date: "2025-01-01",
+        description: "Quarterly subscription fee",
+        status: "completed",
+        type: "subscription",
+        method: "bank_transfer",
+        reference: "SUB987654",
+        dueDate: "2025-01-01"
+      },
+      {
+        amount: "25.00",
+        date: "2024-12-28",
+        description: "Express pickup service",
+        status: "cancelled",
+        type: "pickup",
+        method: "digital_wallet",
+        reference: "EXP147258",
+        dueDate: "2024-12-28"
       }
     ];
 
