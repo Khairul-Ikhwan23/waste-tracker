@@ -2,17 +2,34 @@ import { useEffect, useState } from 'react';
 import Logo from '@/assets/logo.png';
 
 export default function SplashScreen() {
-  const [visible, setVisible] = useState(true);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setVisible(false), 2000);
-    return () => clearTimeout(timer);
+    // Start animation after 1 second
+    const animationTimer = setTimeout(() => {
+      setIsAnimating(true);
+    }, 1000);
+
+    // Remove component completely after animation
+    const removeTimer = setTimeout(() => {
+      setIsVisible(false);
+    }, 1500); // 1s delay + 0.5s animation
+
+    return () => {
+      clearTimeout(animationTimer);
+      clearTimeout(removeTimer);
+    };
   }, []);
 
-  if (!visible) return null;
+  if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 bg-green-500 bg-opacity-50 flex items-center justify-center transition-opacity duration-500 z-50">
+    <div 
+      className={`fixed inset-0 bg-green-500 bg-opacity-50 flex items-center justify-center z-50 transition-transform duration-500 ease-in-out ${
+        isAnimating ? '-translate-y-full' : 'translate-y-0'
+      }`}
+    >
       <div className="animate-pulse">
         <img src={Logo} alt="Kitar360 Logo" className="h-32 w-auto" />
       </div>
