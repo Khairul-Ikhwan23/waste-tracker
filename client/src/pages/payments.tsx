@@ -406,53 +406,54 @@ export default function Payments() {
                     Payment Records ({filteredPayments.length})
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-4 max-h-96 overflow-y-auto">
+                <CardContent className="p-0">
+                  <div className="space-y-4 max-h-96 overflow-y-auto overflow-x-hidden p-4">
                     {filteredPayments.map((payment) => (
-                      <div key={payment.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-4">
+                      <div key={payment.id} className="p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors w-full">
+                        <div className="flex items-start justify-between gap-3 w-full">
+                          <div className="flex items-start gap-3 flex-1 min-w-0">
                             <div className="flex-shrink-0">
-                              <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                                <DollarSign className="w-5 h-5 text-green-600" />
+                              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                <DollarSign className="w-4 h-4 text-green-600" />
                               </div>
                             </div>
                             <div className="flex-1 min-w-0">
-                              <div className="flex items-center space-x-2 mb-1">
-                                <div className="font-semibold text-lg text-gray-900">
+                              <div className="flex flex-wrap items-center gap-2 mb-2">
+                                <div className="font-semibold text-base text-gray-900">
                                   ${parseFloat(payment.amount).toFixed(2)}
                                 </div>
-                                <Badge className={getStatusColor(payment.status)}>
+                                <Badge className={`${getStatusColor(payment.status)} text-xs px-2 py-1`}>
                                   <div className="flex items-center gap-1">
                                     {getStatusIcon(payment.status)}
-                                    {payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
+                                    <span className="truncate">{payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}</span>
                                   </div>
                                 </Badge>
-                                <Badge className={getTypeColor(payment.type)}>
-                                  {payment.type.charAt(0).toUpperCase() + payment.type.slice(1)}
+                                <Badge className={`${getTypeColor(payment.type)} text-xs px-2 py-1`}>
+                                  <span className="truncate">{payment.type.charAt(0).toUpperCase() + payment.type.slice(1)}</span>
                                 </Badge>
                               </div>
                               <div className="space-y-1">
-                                <p className="text-sm font-medium text-gray-900">
+                                <p className="text-sm font-medium text-gray-900 truncate">
                                   {payment.description || 'No description'}
                                 </p>
-                                <div className="flex items-center justify-between text-xs text-gray-500">
-                                  <span>{formatMethod(payment.method || 'card')}</span>
-                                  <span>{payment.date}</span>
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 text-xs text-gray-500">
+                                  <span className="truncate">{formatMethod(payment.method || 'card')}</span>
+                                  <span className="truncate">{payment.date}</span>
                                   {payment.reference && (
-                                    <span className="font-mono">{payment.reference}</span>
+                                    <span className="font-mono truncate">{payment.reference}</span>
                                   )}
                                 </div>
                               </div>
                             </div>
-                            <Button 
-                              variant="ghost" 
-                              size="sm"
-                              onClick={() => setSelectedPayment(payment)}
-                            >
-                              <Eye className="w-4 h-4" />
-                            </Button>
                           </div>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => setSelectedPayment(payment)}
+                            className="flex-shrink-0"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </Button>
                         </div>
                       </div>
                     ))}
