@@ -66,6 +66,8 @@ const getAllNavigationItems = () => [
   { name: "Settings", icon: Settings, path: "/settings", key: "settings" },
 ];
 
+
+
 export default function Sidebar({ isOpen, onClose, isMobile }: SidebarProps) {
   const [location, navigate] = useLocation();
   const { currentUser } = useUser();
@@ -77,6 +79,23 @@ export default function Sidebar({ isOpen, onClose, isMobile }: SidebarProps) {
   const navigationItems = allNavigationItems.filter((item) =>
     userPermissions.canAccess.includes(item.key),
   );
+
+  // Helper function to get shortened names for mobile
+  const getShortName = (name: string): string => {
+    const shortNames: Record<string, string> = {
+      "Pickup Requests": "Requests",
+      "Route Planner": "Routes",
+      "Recycling Metrics": "Metrics",
+      "Environmental Reports": "Reports",
+      "Pickup History": "History",
+      "EcoRewards": "Rewards",
+      "Payments": "Pay",
+      "Settings": "Settings",
+      "Dashboard": "Home",
+      "Profile": "Profile"
+    };
+    return shortNames[name] || name;
+  };
 
   return (
     <div
@@ -127,13 +146,15 @@ export default function Sidebar({ isOpen, onClose, isMobile }: SidebarProps) {
               >
                 <Icon
                   className={cn(
-                    "mr-3 h-5 w-5",
+                    "mr-3 h-5 w-5 flex-shrink-0",
                     isActive
                       ? "text-green-primary"
                       : "text-gray-400 group-hover:text-green-primary",
                   )}
                 />
-                {item.name}
+                <span className="truncate">
+                  {isMobile ? getShortName(item.name) : item.name}
+                </span>
               </button>
             );
           })}

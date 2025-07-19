@@ -525,7 +525,7 @@ export const rolePermissions = {
     dashboardStats: ['recyclingRate', 'pickupVolume', 'impactReport', 'csrPoints']
   },
   'Waste Operator': {
-    canAccess: ['dashboard', 'route-planner', 'pickup-requests', 'payments', 'settings'],
+    canAccess: ['dashboard', 'route-planner', 'pickup-requests', 'environmental-reports', 'payments', 'settings'],
     canViewOthers: false,
     canSchedule: false,
     canViewRoutes: true,
