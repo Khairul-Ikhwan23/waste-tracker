@@ -113,8 +113,11 @@ export default function PickupHistoryPage() {
               <div className="flex items-center">
                 <div className="ml-12 lg:ml-0">
                   <h1 className="text-2xl font-bold text-gray-900">Pickup History</h1>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm text-gray-600 mt-1 hidden sm:block">
                     View your waste collection history and environmental impact
+                  </p>
+                  <p className="text-sm text-gray-600 mt-1 sm:hidden">
+                    View collection history
                   </p>
                 </div>
               </div>

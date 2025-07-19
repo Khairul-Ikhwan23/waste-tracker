@@ -116,8 +116,11 @@ export default function PickupRequests() {
               <div className="flex items-center">
                 <div className="ml-12 lg:ml-0">
                   <h1 className="text-2xl font-bold text-gray-900">Pickup Requests</h1>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm text-gray-600 mt-1 hidden sm:block">
                     Schedule and manage waste pickup requests
+                  </p>
+                  <p className="text-sm text-gray-600 mt-1 sm:hidden">
+                    Schedule pickups
                   </p>
                 </div>
               </div>

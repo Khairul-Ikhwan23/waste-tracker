@@ -109,8 +109,11 @@ export default function RoutePlanner() {
               <div className="flex items-center">
                 <div className="ml-12 lg:ml-0">
                   <h1 className="text-2xl font-bold text-gray-900">Route Planner</h1>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm text-gray-600 mt-1 hidden sm:block">
                     Optimize pickup routes and manage collections
+                  </p>
+                  <p className="text-sm text-gray-600 mt-1 sm:hidden">
+                    Optimize routes
                   </p>
                 </div>
               </div>

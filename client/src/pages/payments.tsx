@@ -94,6 +94,9 @@ export default function Payments() {
                   <p className="text-xs sm:text-sm text-gray-600 mt-1 hidden sm:block">
                     Manage and track payment records
                   </p>
+                  <p className="text-xs text-gray-600 mt-1 sm:hidden">
+                    Payment records
+                  </p>
                 </div>
               </div>
             </div>

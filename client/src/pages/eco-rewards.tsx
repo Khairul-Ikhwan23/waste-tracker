@@ -98,8 +98,11 @@ export default function EcoRewards() {
               <div className="flex items-center">
                 <div className="ml-12 lg:ml-0">
                   <h1 className="text-2xl font-bold text-gray-900">EcoRewards</h1>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm text-gray-600 mt-1 hidden sm:block">
                     Earn points for recycling and redeem amazing rewards
+                  </p>
+                  <p className="text-sm text-gray-600 mt-1 sm:hidden">
+                    Earn and redeem rewards
                   </p>
                 </div>
               </div>

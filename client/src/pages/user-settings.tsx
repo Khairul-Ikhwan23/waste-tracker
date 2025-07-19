@@ -93,6 +93,9 @@ export default function UserSettings() {
                   <p className="text-xs sm:text-sm text-gray-600 mt-1 hidden sm:block">
                     Manage your account preferences and privacy settings
                   </p>
+                  <p className="text-xs text-gray-600 mt-1 sm:hidden">
+                    Account settings
+                  </p>
                 </div>
               </div>
               <div className="flex items-center flex-shrink-0">

@@ -110,6 +110,9 @@ export default function UserProfile() {
                   <p className="text-xs sm:text-sm text-gray-600 mt-1 hidden sm:block">
                     Manage your personal information and preferences
                   </p>
+                  <p className="text-xs text-gray-600 mt-1 sm:hidden">
+                    Manage profile
+                  </p>
                 </div>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
