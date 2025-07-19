@@ -140,7 +140,7 @@ export default function Payments() {
   const completedCount = filteredPayments.filter(payment => payment.status === 'completed').length;
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
       <Sidebar
         isOpen={isMobileMenuOpen}
@@ -157,9 +157,9 @@ export default function Payments() {
       )}
 
       {/* Main Content */}
-      <div className="flex-1 lg:ml-0 flex flex-col">
+      <div className="flex-1 lg:ml-0">
         {/* Header */}
-        <header className="bg-white shadow-sm border-b border-gray-200 flex-shrink-0">
+        <header className="bg-white shadow-sm border-b border-gray-200">
           <div className="px-3 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between min-h-16 py-2 sm:py-0">
               <div className="flex items-center flex-1 min-w-0 pr-2">
@@ -189,7 +189,7 @@ export default function Payments() {
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 px-3 sm:px-6 lg:px-8 py-6 overflow-y-auto">
+        <main className="px-3 sm:px-6 lg:px-8 py-6 overflow-y-auto" style={{ height: 'calc(100vh - 80px)' }}>
           {/* Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <Card>
@@ -407,7 +407,7 @@ export default function Payments() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
+                  <div className="space-y-4 max-h-96 overflow-y-auto">
                     {filteredPayments.map((payment) => (
                       <div key={payment.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors">
                         <div className="flex items-center justify-between">
