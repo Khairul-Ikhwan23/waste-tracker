@@ -94,33 +94,43 @@ export default function UserProfile() {
       <div className="flex-1 lg:ml-0">
         {/* Header */}
         <header className="bg-white shadow-sm border-b border-gray-200">
-          <div className="px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
-              <div className="flex items-center">
-                <div className="ml-12 lg:ml-0">
-                  <h1 className="text-2xl font-bold text-gray-900">User Profile</h1>
-                  <p className="text-sm text-gray-600 mt-1">
+          <div className="px-3 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between min-h-16 py-2 sm:py-0">
+              <div className="flex items-center flex-1 min-w-0 pr-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setIsMobileMenuOpen(true)}
+                  className="lg:hidden mr-3 flex-shrink-0"
+                >
+                  <Menu className="h-5 w-5" />
+                </Button>
+                <div className="flex-1 min-w-0">
+                  <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 truncate">Profile</h1>
+                  <p className="text-xs sm:text-sm text-gray-600 mt-1 hidden sm:block">
                     Manage your personal information and preferences
                   </p>
                 </div>
               </div>
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center gap-2 flex-shrink-0">
                 {!isEditing ? (
                   <Button 
+                    size="sm"
                     onClick={() => setIsEditing(true)}
                     className="green-primary hover:bg-green-600 text-white"
                   >
-                    <Edit className="w-4 h-4 mr-2" />
-                    Edit Profile
+                    <Edit className="w-4 h-4 sm:mr-2" />
+                    <span className="hidden sm:inline">Edit Profile</span>
                   </Button>
                 ) : (
-                  <div className="flex space-x-2">
+                  <div className="flex gap-2">
                     <Button 
+                      size="sm"
                       onClick={handleSave}
                       className="green-primary hover:bg-green-600 text-white"
                     >
-                      <Save className="w-4 h-4 mr-2" />
-                      Save Changes
+                      <Save className="w-4 h-4 sm:mr-2" />
+                      <span className="hidden sm:inline">Save Changes</span>
                     </Button>
                     <Button 
                       onClick={handleCancel}
