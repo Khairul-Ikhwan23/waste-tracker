@@ -121,7 +121,7 @@ export default function Sidebar({ isOpen, onClose, isMobile }: SidebarProps) {
                   if (isMobile) onClose();
                 }}
                 className={cn(
-                  "group flex items-center px-3 py-2 text-sm font-medium rounded-lg w-full text-left transition-colors",
+                  "group flex items-center px-3 py-2 text-xs sm:text-sm font-medium rounded-lg w-full text-left transition-colors",
                   isActive
                     ? "green-light text-green-primary"
                     : "text-gray-600 hover:bg-gray-50 hover:text-green-primary",
