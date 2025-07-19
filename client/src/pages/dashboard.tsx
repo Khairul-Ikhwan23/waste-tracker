@@ -9,7 +9,6 @@ import QuickActions from "@/components/dashboard/quick-actions";
 import NotificationDropdown from "@/components/dashboard/notification-dropdown";
 import RoleSwitcher from "@/components/dashboard/role-switcher";
 import OperatorPickupStatus from "@/components/dashboard/operator-pickup-status";
-
 import { Button } from "@/components/ui/button";
 import { Plus, Menu, X } from "lucide-react";
 import { useLocation } from "wouter";
@@ -29,19 +28,7 @@ export default function Dashboard() {
     <div className="flex min-h-screen bg-gray-50">
       
       
-      {/* Mobile Menu Toggle */}
-      {isMobile && (
-        <div className="fixed top-4 left-4 z-50 lg:hidden">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={toggleMobileMenu}
-            className="bg-white shadow-md"
-          >
-            <Menu className="h-4 w-4" />
-          </Button>
-        </div>
-      )}
+      
 
       {/* Sidebar */}
       <Sidebar 
