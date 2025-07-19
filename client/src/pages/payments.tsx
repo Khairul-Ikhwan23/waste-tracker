@@ -39,14 +39,120 @@ export default function Payments() {
     },
   });
 
-  const paymentsQuery = useQuery({
-    queryKey: ["/api/payments"],
-  });
+  // Hardcoded payment data
+  const hardcodedPayments: Payment[] = [
+    {
+      id: 1,
+      amount: "125.50",
+      date: "2025-01-15",
+      description: "Monthly waste collection service",
+      status: "completed",
+      type: "subscription",
+      method: "card",
+      reference: "TXN001234",
+      dueDate: "2025-01-15",
+      createdAt: new Date("2025-01-15")
+    },
+    {
+      id: 2,
+      amount: "75.00",
+      date: "2025-01-12",
+      description: "Recycling bonus payment",
+      status: "pending",
+      type: "refund",
+      method: "bank_transfer",
+      reference: "REF567890",
+      dueDate: "2025-01-20",
+      createdAt: new Date("2025-01-12")
+    },
+    {
+      id: 3,
+      amount: "200.00",
+      date: "2025-01-10",
+      description: "Bulk waste disposal fee",
+      status: "completed",
+      type: "pickup",
+      method: "digital_wallet",
+      reference: "TXN002468",
+      dueDate: "2025-01-10",
+      createdAt: new Date("2025-01-10")
+    },
+    {
+      id: 4,
+      amount: "45.25",
+      date: "2025-01-08",
+      description: "Electronic waste processing",
+      status: "failed",
+      type: "pickup",
+      method: "card",
+      reference: "TXN003691",
+      dueDate: "2025-01-08",
+      createdAt: new Date("2025-01-08")
+    },
+    {
+      id: 5,
+      amount: "90.00",
+      date: "2025-01-05",
+      description: "Commercial waste pickup",
+      status: "completed",
+      type: "pickup",
+      method: "cash",
+      reference: "TXN004820",
+      dueDate: "2025-01-05",
+      createdAt: new Date("2025-01-05")
+    },
+    {
+      id: 6,
+      amount: "50.00",
+      date: "2025-01-03",
+      description: "Late payment penalty",
+      status: "pending",
+      type: "penalty",
+      method: "card",
+      reference: "PEN001234",
+      dueDate: "2025-01-25",
+      createdAt: new Date("2025-01-03")
+    },
+    {
+      id: 7,
+      amount: "180.00",
+      date: "2025-01-01",
+      description: "Quarterly subscription fee",
+      status: "completed",
+      type: "subscription",
+      method: "bank_transfer",
+      reference: "SUB987654",
+      dueDate: "2025-01-01",
+      createdAt: new Date("2025-01-01")
+    },
+    {
+      id: 8,
+      amount: "25.00",
+      date: "2024-12-28",
+      description: "Express pickup service",
+      status: "cancelled",
+      type: "pickup",
+      method: "digital_wallet",
+      reference: "EXP147258",
+      dueDate: "2024-12-28",
+      createdAt: new Date("2024-12-28")
+    }
+  ];
+
+  const [localPayments, setLocalPayments] = useState<Payment[]>(hardcodedPayments);
 
   const addPaymentMutation = useMutation({
-    mutationFn: (data: InsertPayment) => apiRequest("/api/payments", "POST", data),
+    mutationFn: async (data: InsertPayment) => {
+      // Simulate API call with local state update
+      const newPayment: Payment = {
+        ...data,
+        id: Math.max(...localPayments.map(p => p.id)) + 1,
+        createdAt: new Date(),
+      };
+      setLocalPayments(prev => [newPayment, ...prev]);
+      return newPayment;
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/payments"] });
       form.reset();
       toast({
         title: "Payment Added",
@@ -66,7 +172,7 @@ export default function Payments() {
     addPaymentMutation.mutate(data);
   };
 
-  const payments: Payment[] = paymentsQuery.data || [];
+  const payments: Payment[] = localPayments;
 
   // Filter and search functionality
   const filteredPayments = payments.filter(payment => {
