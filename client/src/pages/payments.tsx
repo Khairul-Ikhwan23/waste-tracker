@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Sidebar from "@/components/dashboard/sidebar";
 import { Button } from "@/components/ui/button";
@@ -11,23 +10,59 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Menu, CreditCard, Plus, Calendar, DollarSign, Filter, Search, Download, AlertCircle, CheckCircle, Clock, XCircle, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { insertPaymentSchema, type InsertPayment, type Payment } from "@shared/schema";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { samplePaymentRecords, type PaymentRecord } from "@/lib/data";
+
+interface PaymentFormData {
+  amount: string;
+  date: string;
+  description: string;
+  status: 'pending' | 'completed' | 'failed' | 'cancelled';
+  type: 'pickup' | 'subscription' | 'penalty' | 'refund';
+  method: 'card' | 'bank_transfer' | 'cash' | 'digital_wallet';
+  reference: string;
+  dueDate: string;
+}
 
 export default function Payments() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterType, setFilterType] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
+  const [selectedPayment, setSelectedPayment] = useState<PaymentRecord | null>(null);
+  const [payments, setPayments] = useState<PaymentRecord[]>(samplePaymentRecords);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const isMobile = useIsMobile();
   const { toast } = useToast();
 
-  const form = useForm<InsertPayment>({
-    resolver: zodResolver(insertPaymentSchema),
-    defaultValues: {
+  // Form state
+  const [formData, setFormData] = useState<PaymentFormData>({
+    amount: "",
+    date: new Date().toISOString().split('T')[0],
+    description: "",
+    status: "pending",
+    type: "pickup",
+    method: "card",
+    reference: "",
+    dueDate: "",
+  });
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    // Create new payment record
+    const newPayment: PaymentRecord = {
+      id: (payments.length + 1).toString(),
+      ...formData,
+      dueDate: formData.dueDate || null,
+      createdAt: new Date().toISOString(),
+    };
+
+    // Add to payments list
+    setPayments([newPayment, ...payments]);
+
+    // Reset form
+    setFormData({
       amount: "",
       date: new Date().toISOString().split('T')[0],
       description: "",
@@ -35,38 +70,15 @@ export default function Payments() {
       type: "pickup",
       method: "card",
       reference: "",
-      dueDate: null,
-    },
-  });
+      dueDate: "",
+    });
 
-  const paymentsQuery = useQuery({
-    queryKey: ["/api/payments"],
-  });
-
-  const addPaymentMutation = useMutation({
-    mutationFn: (data: InsertPayment) => apiRequest("/api/payments", "POST", data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/payments"] });
-      form.reset();
-      toast({
-        title: "Payment Added",
-        description: "Payment record has been successfully added.",
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to add payment record.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const onSubmit = (data: InsertPayment) => {
-    addPaymentMutation.mutate(data);
+    setIsSubmitting(false);
+    toast({
+      title: "Payment Added",
+      description: "Payment record has been successfully added.",
+    });
   };
-
-  const payments: Payment[] = paymentsQuery.data || [];
 
   // Filter and search functionality
   const filteredPayments = payments.filter(payment => {
@@ -161,22 +173,25 @@ export default function Payments() {
                 </Button>
                 <div className="flex-1 min-w-0">
                   <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 truncate">Payments</h1>
-                  <p className="text-xs sm:text-sm text-gray-600 mt-1 hidden sm:block">
-                    Manage and track payment records
-                  </p>
-                  <p className="text-xs text-gray-600 mt-1 sm:hidden">
-                    Payment records
+                  <p className="text-sm text-gray-600 mt-1 hidden sm:block">
+                    Manage payment records and financial transactions
                   </p>
                 </div>
+              </div>
+              <div className="flex items-center space-x-2 flex-shrink-0">
+                <Button variant="outline" size="sm">
+                  <Download className="w-4 h-4 mr-2" />
+                  Export
+                </Button>
               </div>
             </div>
           </div>
         </header>
 
-        {/* Content */}
-        <main className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
-          {/* Summary Statistics */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        {/* Main Content */}
+        <main className="px-3 sm:px-6 lg:px-8 py-6 overflow-y-auto">
+          {/* Summary Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center">
@@ -225,12 +240,12 @@ export default function Payments() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
-                  <Plus className="w-5 h-5 mr-2 text-green-primary" />
+                  <Plus className="w-5 h-5 mr-2 text-green-600" />
                   Add New Payment
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <form onSubmit={handleFormSubmit} className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="amount">Amount</Label>
@@ -239,14 +254,11 @@ export default function Payments() {
                         type="number"
                         step="0.01"
                         placeholder="0.00"
-                        {...form.register("amount")}
+                        value={formData.amount}
+                        onChange={(e) => setFormData({...formData, amount: e.target.value})}
                         className="mt-1"
+                        required
                       />
-                      {form.formState.errors.amount && (
-                        <p className="text-sm text-red-600 mt-1">
-                          {form.formState.errors.amount.message}
-                        </p>
-                      )}
                     </div>
 
                     <div>
@@ -254,21 +266,18 @@ export default function Payments() {
                       <Input
                         id="date"
                         type="date"
-                        {...form.register("date")}
+                        value={formData.date}
+                        onChange={(e) => setFormData({...formData, date: e.target.value})}
                         className="mt-1"
+                        required
                       />
-                      {form.formState.errors.date && (
-                        <p className="text-sm text-red-600 mt-1">
-                          {form.formState.errors.date.message}
-                        </p>
-                      )}
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="type">Type</Label>
-                      <Select onValueChange={(value) => form.setValue("type", value as any)}>
+                      <Select value={formData.type} onValueChange={(value) => setFormData({...formData, type: value as PaymentFormData['type']})}>
                         <SelectTrigger className="mt-1">
                           <SelectValue placeholder="Select type" />
                         </SelectTrigger>
@@ -283,7 +292,7 @@ export default function Payments() {
 
                     <div>
                       <Label htmlFor="method">Payment Method</Label>
-                      <Select onValueChange={(value) => form.setValue("method", value as any)}>
+                      <Select value={formData.method} onValueChange={(value) => setFormData({...formData, method: value as PaymentFormData['method']})}>
                         <SelectTrigger className="mt-1">
                           <SelectValue placeholder="Select method" />
                         </SelectTrigger>
@@ -298,11 +307,23 @@ export default function Payments() {
                   </div>
 
                   <div>
-                    <Label htmlFor="reference">Reference Number (Optional)</Label>
+                    <Label htmlFor="reference">Reference Number</Label>
                     <Input
                       id="reference"
-                      placeholder="TXN123456"
-                      {...form.register("reference")}
+                      placeholder="Transaction reference"
+                      value={formData.reference}
+                      onChange={(e) => setFormData({...formData, reference: e.target.value})}
+                      className="mt-1"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="dueDate">Due Date (Optional)</Label>
+                    <Input
+                      id="dueDate"
+                      type="date"
+                      value={formData.dueDate}
+                      onChange={(e) => setFormData({...formData, dueDate: e.target.value})}
                       className="mt-1"
                     />
                   </div>
@@ -312,17 +333,18 @@ export default function Payments() {
                     <Textarea
                       id="description"
                       placeholder="Payment description"
-                      {...form.register("description")}
+                      value={formData.description}
+                      onChange={(e) => setFormData({...formData, description: e.target.value})}
                       className="mt-1"
                     />
                   </div>
 
                   <Button
                     type="submit"
-                    className="w-full green-primary text-white hover:bg-green-600"
-                    disabled={addPaymentMutation.isPending}
+                    className="w-full bg-green-600 text-white hover:bg-green-700"
+                    disabled={isSubmitting}
                   >
-                    {addPaymentMutation.isPending ? "Adding..." : "Add Payment"}
+                    {isSubmitting ? "Adding..." : "Add Payment"}
                   </Button>
                 </form>
               </CardContent>
@@ -371,91 +393,83 @@ export default function Payments() {
                           <SelectItem value="refund">Refund</SelectItem>
                         </SelectContent>
                       </Select>
-                      
-                      <Button variant="outline" size="icon">
-                        <Download className="w-4 h-4" />
-                      </Button>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Payment List */}
+              {/* Payment Records */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <CreditCard className="w-5 h-5 mr-2 text-green-primary" />
-                      Payment Records ({filteredPayments.length})
-                    </div>
+                  <CardTitle className="flex items-center">
+                    <CreditCard className="w-5 h-5 mr-2 text-green-600" />
+                    Payment Records ({filteredPayments.length})
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {paymentsQuery.isLoading ? (
-                    <div className="text-center py-8 text-gray-500">
-                      Loading payments...
-                    </div>
-                  ) : filteredPayments.length === 0 ? (
-                    <div className="text-center py-8 text-gray-500">
-                      No payments found matching your criteria
-                    </div>
-                  ) : (
-                    <div className="space-y-3 max-h-96 overflow-y-auto">
-                      {filteredPayments.map((payment) => (
-                        <div
-                          key={payment.id}
-                          className="p-4 border border-gray-200 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
-                          onClick={() => setSelectedPayment(payment)}
-                        >
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center gap-3">
-                              <div className="font-semibold text-lg text-gray-900">
-                                ${parseFloat(payment.amount).toFixed(2)}
+                  <div className="space-y-4">
+                    {filteredPayments.map((payment) => (
+                      <div key={payment.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-4">
+                            <div className="flex-shrink-0">
+                              <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                                <DollarSign className="w-5 h-5 text-green-600" />
                               </div>
-                              <Badge className={getStatusColor(payment.status)}>
-                                <div className="flex items-center gap-1">
-                                  {getStatusIcon(payment.status)}
-                                  {payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
-                                </div>
-                              </Badge>
-                              <Badge className={getTypeColor(payment.type)}>
-                                {payment.type.charAt(0).toUpperCase() + payment.type.slice(1)}
-                              </Badge>
                             </div>
-                            <Button variant="ghost" size="sm">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center space-x-2 mb-1">
+                                <div className="font-semibold text-lg text-gray-900">
+                                  ${parseFloat(payment.amount).toFixed(2)}
+                                </div>
+                                <Badge className={getStatusColor(payment.status)}>
+                                  <div className="flex items-center gap-1">
+                                    {getStatusIcon(payment.status)}
+                                    {payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
+                                  </div>
+                                </Badge>
+                                <Badge className={getTypeColor(payment.type)}>
+                                  {payment.type.charAt(0).toUpperCase() + payment.type.slice(1)}
+                                </Badge>
+                              </div>
+                              <div className="space-y-1">
+                                <p className="text-sm font-medium text-gray-900">
+                                  {payment.description || 'No description'}
+                                </p>
+                                <div className="flex items-center justify-between text-xs text-gray-500">
+                                  <span>{formatMethod(payment.method || 'card')}</span>
+                                  <span>{payment.date}</span>
+                                  {payment.reference && (
+                                    <span className="font-mono">{payment.reference}</span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => setSelectedPayment(payment)}
+                            >
                               <Eye className="w-4 h-4" />
                             </Button>
                           </div>
-                          
-                          <div className="space-y-1">
-                            <p className="text-sm font-medium text-gray-900">
-                              {payment.description || 'No description'}
-                            </p>
-                            <div className="flex items-center justify-between text-xs text-gray-500">
-                              <span>{formatMethod(payment.method || 'card')}</span>
-                              <span>Date: {payment.date}</span>
-                            </div>
-                            {payment.reference && (
-                              <p className="text-xs text-gray-400">
-                                Ref: {payment.reference}
-                              </p>
-                            )}
-                            {payment.dueDate && payment.status === 'pending' && (
-                              <p className="text-xs text-orange-600">
-                                Due: {payment.dueDate}
-                              </p>
-                            )}
-                          </div>
                         </div>
-                      ))}
-                    </div>
-                  )}
+                      </div>
+                    ))}
+                    
+                    {filteredPayments.length === 0 && (
+                      <div className="text-center py-8">
+                        <CreditCard className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                        <p className="text-gray-500">No payment records found</p>
+                      </div>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             </div>
           </div>
 
-          {/* Payment Detail Modal - Simple version for now */}
+          {/* Payment Detail Modal */}
           {selectedPayment && (
             <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
               <Card className="w-full max-w-md">
@@ -512,7 +526,7 @@ export default function Payments() {
                   {selectedPayment.description && (
                     <div>
                       <span className="font-medium">Description:</span>
-                      <p className="text-gray-600 mt-1">{selectedPayment.description}</p>
+                      <p className="mt-1 text-sm text-gray-600">{selectedPayment.description}</p>
                     </div>
                   )}
                 </CardContent>

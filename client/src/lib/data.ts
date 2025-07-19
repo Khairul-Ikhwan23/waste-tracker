@@ -327,6 +327,19 @@ export interface PickupHistory {
   location: string;
 }
 
+export interface PaymentRecord {
+  id: string;
+  amount: string;
+  date: string;
+  description: string;
+  status: 'pending' | 'completed' | 'failed' | 'cancelled';
+  type: 'pickup' | 'subscription' | 'penalty' | 'refund';
+  method: 'card' | 'bank_transfer' | 'cash' | 'digital_wallet';
+  reference: string;
+  dueDate: string | null;
+  createdAt: string;
+}
+
 export interface EcoReward {
   id: string;
   title: string;
@@ -443,6 +456,106 @@ export const samplePickupHistory: PickupHistory[] = [
     volume: 20,
     carbonSaved: 0,
     location: 'Kiulap Plaza'
+  }
+];
+
+// Sample payment records
+export const samplePaymentRecords: PaymentRecord[] = [
+  {
+    id: '1',
+    amount: '125.50',
+    date: '2025-01-15',
+    description: 'Monthly waste collection service',
+    status: 'completed',
+    type: 'subscription',
+    method: 'card',
+    reference: 'TXN001234',
+    dueDate: '2025-01-15',
+    createdAt: '2025-01-15T08:30:00Z'
+  },
+  {
+    id: '2',
+    amount: '75.00',
+    date: '2025-01-12',
+    description: 'Recycling bonus payment',
+    status: 'pending',
+    type: 'refund',
+    method: 'bank_transfer',
+    reference: 'REF567890',
+    dueDate: '2025-01-20',
+    createdAt: '2025-01-12T14:20:00Z'
+  },
+  {
+    id: '3',
+    amount: '200.00',
+    date: '2025-01-10',
+    description: 'Bulk waste disposal fee',
+    status: 'completed',
+    type: 'pickup',
+    method: 'digital_wallet',
+    reference: 'TXN002468',
+    dueDate: '2025-01-10',
+    createdAt: '2025-01-10T16:45:00Z'
+  },
+  {
+    id: '4',
+    amount: '45.25',
+    date: '2025-01-08',
+    description: 'Electronic waste processing',
+    status: 'failed',
+    type: 'pickup',
+    method: 'card',
+    reference: 'TXN003691',
+    dueDate: '2025-01-08',
+    createdAt: '2025-01-08T10:15:00Z'
+  },
+  {
+    id: '5',
+    amount: '90.00',
+    date: '2025-01-05',
+    description: 'Commercial waste pickup',
+    status: 'completed',
+    type: 'pickup',
+    method: 'cash',
+    reference: 'TXN004820',
+    dueDate: '2025-01-05',
+    createdAt: '2025-01-05T12:00:00Z'
+  },
+  {
+    id: '6',
+    amount: '50.00',
+    date: '2025-01-03',
+    description: 'Late payment penalty',
+    status: 'pending',
+    type: 'penalty',
+    method: 'card',
+    reference: 'PEN001234',
+    dueDate: '2025-01-25',
+    createdAt: '2025-01-03T09:30:00Z'
+  },
+  {
+    id: '7',
+    amount: '180.00',
+    date: '2025-01-01',
+    description: 'Quarterly subscription fee',
+    status: 'completed',
+    type: 'subscription',
+    method: 'bank_transfer',
+    reference: 'SUB987654',
+    dueDate: '2025-01-01',
+    createdAt: '2025-01-01T00:01:00Z'
+  },
+  {
+    id: '8',
+    amount: '25.00',
+    date: '2024-12-28',
+    description: 'Express pickup service',
+    status: 'cancelled',
+    type: 'pickup',
+    method: 'digital_wallet',
+    reference: 'EXP147258',
+    dueDate: '2024-12-28',
+    createdAt: '2024-12-28T11:20:00Z'
   }
 ];
 
