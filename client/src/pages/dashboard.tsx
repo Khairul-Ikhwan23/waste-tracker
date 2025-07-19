@@ -9,7 +9,7 @@ import QuickActions from "@/components/dashboard/quick-actions";
 import NotificationDropdown from "@/components/dashboard/notification-dropdown";
 import RoleSwitcher from "@/components/dashboard/role-switcher";
 import OperatorPickupStatus from "@/components/dashboard/operator-pickup-status";
-import MobileTestHelper from "@/components/mobile-test-helper";
+
 import { Button } from "@/components/ui/button";
 import { Plus, Menu, X } from "lucide-react";
 import { useLocation } from "wouter";
@@ -27,8 +27,7 @@ export default function Dashboard() {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      {/* Mobile Test Helper */}
-      <MobileTestHelper />
+      
       
       {/* Mobile Menu Toggle */}
       {isMobile && (
