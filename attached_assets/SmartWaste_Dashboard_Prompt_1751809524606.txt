@@ -1,0 +1,44 @@
+
+Project Title:
+SBNone Smart Waste Dashboard (MVP Prototype)
+
+Description:
+Create a clean, modern, responsive web-based dashboard for a Smart Waste Management platform prototype. The dashboard should align with sustainability and eco-management themes, using a green color palette inspired by environmental initiatives.
+
+Features to Include:
+- Navigation Sidebar (left or top) with:
+  - Dashboard
+  - Pickup Requests
+  - Waste Reports
+  - EcoRewards
+  - Settings
+- Main Dashboard Page:
+  - Welcome message (e.g., “Welcome to SBNone Smart Waste Dashboard”)
+  - 3–4 Info Cards displaying:
+    - Total Pickups This Month
+    - Total Waste Diverted (kg)
+    - Carbon Credits Earned
+    - Active Recyclers
+  - A simple bar or pie chart placeholder for Waste Type Breakdown.
+  - Quick link button for Request New Pickup
+- Use green shades (#43A047, #66BB6A, #A5D6A7) combined with white and soft gray backgrounds
+- Clean, modern fonts like Roboto, Poppins, or Open Sans
+- Soft shadows, rounded corners, and clean spacing
+- Responsive layout for both desktop and mobile
+- No login/authentication needed for now (static UI prototype)
+
+Technology Stack:
+- Frontend: HTML, CSS, JavaScript
+- Optional: Tailwind CSS or Bootstrap for faster UI layout
+- Runable inside Replit’s HTML/CSS/JS template
+
+Additional Notes:
+- Prioritize readability and ease of use.
+- Avoid clutter — minimal, clean UI.
+- Use environmental icons or SVGs where appropriate (e.g., recycling icon, leaf icon).
+- Focus on MVP dashboard visuals, no backend integration needed yet.
+
+Sample Title / Branding Ideas:
+- SBNone SmartWaste Dashboard
+- EcoManage Panel
+- GreenTrack

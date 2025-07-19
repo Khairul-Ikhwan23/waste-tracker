@@ -1,0 +1,315 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Ensure all containers stay within viewport */
+.container,
+.max-w-7xl,
+.max-w-6xl,
+.max-w-4xl,
+.max-w-2xl {
+  max-width: 100vw;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container,
+  .max-w-7xl,
+  .max-w-6xl,
+  .max-w-4xl,
+  .max-w-2xl {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+/* Mobile-optimized styles */
+@media (max-width: 768px) {
+  /* Prevent any element from exceeding viewport */
+  *, *::before, *::after {
+    max-width: 100vw;
+  }
+  
+  /* Header fixes */
+  header {
+    width: 100vw;
+    overflow: hidden;
+  }
+  
+  header > div {
+    width: 100%;
+    max-width: 100vw;
+    overflow: hidden;
+  }
+  
+  /* Text overflow prevention */
+  h1, h2, h3, h4, h5, h6 {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+  
+  .mobile-responsive {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+  
+  .mobile-touch-target {
+    min-height: 44px;
+    min-width: 44px;
+    touch-action: manipulation;
+  }
+  
+  .mobile-spacing {
+    padding: 0.75rem;
+  }
+  
+  .mobile-text-size {
+    font-size: 0.875rem;
+  }
+  
+  /* Cards stack vertically on mobile */
+  .mobile-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  /* Buttons are full width on mobile */
+  .mobile-button {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  /* Larger font sizes for better readability */
+  .mobile-title {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+  
+  /* Better spacing for mobile forms */
+  .mobile-form-spacing {
+    margin-bottom: 1rem;
+  }
+  
+  /* Hide complex charts on mobile, show simplified view */
+  .mobile-hide-chart {
+    display: none;
+  }
+  
+  /* Mobile-friendly table alternatives */
+  .mobile-table-card {
+    display: block;
+    background: white;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  /* Responsive header adjustments */
+  .mobile-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+  
+  .mobile-header h1 {
+    font-size: 1.125rem;
+    line-height: 1.375rem;
+  }
+  
+  /* Better mobile navigation */
+  .mobile-nav {
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 50;
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 0.75rem;
+  }
+  
+  /* Mobile sidebar adjustments */
+  .mobile-sidebar {
+    width: 280px;
+    max-width: 85vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 40;
+    background: white;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .mobile-sidebar.open {
+    transform: translateX(0);
+  }
+  
+  /* Mobile stats cards */
+  .mobile-stats-card {
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .mobile-stats-card h3 {
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .mobile-stats-card .value {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+  
+  .mobile-stats-card .change {
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+  }
+  
+  /* Ensure content doesn't overflow */
+  main {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+  
+  /* Grid container fixes */
+  .grid {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .grid > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .tablet-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .tablet-spacing {
+    padding: 1.5rem;
+  }
+}
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(20, 14.3%, 4.1%);
+  --muted: hsl(60, 4.8%, 95.9%);
+  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(20, 14.3%, 4.1%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(20, 14.3%, 4.1%);
+  --border: hsl(20, 5.9%, 90%);
+  --input: hsl(20, 5.9%, 90%);
+  --primary: hsl(134, 41%, 35%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(60, 4.8%, 95.9%);
+  --secondary-foreground: hsl(24, 9.8%, 10%);
+  --accent: hsl(134, 30%, 70%);
+  --accent-foreground: hsl(0, 0%, 100%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(60, 9.1%, 97.8%);
+  --ring: hsl(134, 41%, 35%);
+  --radius: 0.5rem;
+  
+  /* Custom green palette variables */
+  --green-primary: hsl(134, 41%, 35%);
+  --green-secondary: hsl(134, 30%, 55%);
+  --green-accent: hsl(134, 30%, 70%);
+  --green-light: hsl(134, 30%, 95%);
+  --gray-light: hsl(0, 0%, 98%);
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(134, 41%, 35%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .green-primary {
+    background-color: var(--green-primary);
+  }
+  
+  .green-secondary {
+    background-color: var(--green-secondary);
+  }
+  
+  .green-accent {
+    background-color: var(--green-accent);
+  }
+  
+  .green-light {
+    background-color: var(--green-light);
+  }
+  
+  .text-green-primary {
+    color: var(--green-primary);
+  }
+  
+  .text-green-secondary {
+    color: var(--green-secondary);
+  }
+  
+  .border-green-primary {
+    border-color: var(--green-primary);
+  }
+  
+  .hover\:bg-green-600:hover {
+    background-color: hsl(134, 41%, 30%);
+  }
+}
