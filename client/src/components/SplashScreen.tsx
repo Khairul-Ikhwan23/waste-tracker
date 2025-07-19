@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import Logo from '@/assets/logo.png';
+import Logo from '@assets/Kitar360_Logo_1752921507044.png';
 
 export default function SplashScreen() {
   const [isAnimating, setIsAnimating] = useState(false);
