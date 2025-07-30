@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import {
+  Plus,
   Edit,
   Trash2,
   MapPin,
@@ -7,7 +8,7 @@ import {
   Phone,
   Clock,
   Search,
-  Menu,
+  Filter,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,6 +17,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,6 +32,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import Sidebar from "@/components/dashboard/sidebar";
+import { Menu } from "lucide-react";
 import { EcoLocation, ECO_CATEGORIES, ECO_LOCATIONS } from "@/lib/eco-map-data";
 import { navigate } from "wouter/use-browser-location";
 
@@ -110,6 +113,43 @@ export default function AdminFacilities() {
 
     setFacilities([...existingFacilities, ...adminFacilities]);
   }, []);
+
+  // Listen for coordinate selection from EcoMap
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const selectedCoords = localStorage.getItem("selected-coordinates");
+      if (selectedCoords) {
+        const coords = JSON.parse(selectedCoords);
+        setFormData((prev) => ({
+          ...prev,
+          coordinates: {
+            lat: coords[0].toString(),
+            lng: coords[1].toString(),
+          },
+        }));
+        // Clear the stored coordinates
+        localStorage.removeItem("selected-coordinates");
+        toast({
+          title: "Coordinates Updated",
+          description: `Location set to ${coords[0].toFixed(6)}, ${coords[1].toFixed(6)}`,
+        });
+      }
+    };
+
+    // Check immediately
+    handleStorageChange();
+
+    // Listen for storage events (from other tabs)
+    window.addEventListener("storage", handleStorageChange);
+
+    // Also listen for focus events (when returning from map tab)
+    window.addEventListener("focus", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("focus", handleStorageChange);
+    };
+  }, [toast]);
 
   // Save facilities to localStorage (only admin-added ones)
   const saveFacilities = (newFacilities: EcoLocation[]) => {
@@ -400,6 +440,272 @@ export default function AdminFacilities() {
             </div>
           </div>
         </header>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="name">Facility Name *</Label>
+                        <Input
+                          id="name"
+                          value={formData.name}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              name: e.target.value,
+                            }))
+                          }
+                          placeholder="Enter facility name"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="category">Category *</Label>
+                        <Select
+                          value={formData.category}
+                          onValueChange={(value) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              category: value as keyof typeof ECO_CATEGORIES,
+                            }))
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select category" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Object.entries(ECO_CATEGORIES).map(
+                              ([key, category]) => (
+                                <SelectItem key={key} value={key}>
+                                  {category.icon} {category.name}
+                                </SelectItem>
+                              ),
+                            )}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="address">Address *</Label>
+                      <Input
+                        id="address"
+                        value={formData.address}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            address: e.target.value,
+                          }))
+                        }
+                        placeholder="Enter full address"
+                        required
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="district">District *</Label>
+                        <Select
+                          value={formData.district}
+                          onValueChange={(value) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              district: value,
+                            }))
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select district" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {BRUNEI_DISTRICTS.map((district) => (
+                              <SelectItem key={district} value={district}>
+                                {district}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label htmlFor="contact">Contact</Label>
+                        <Input
+                          id="contact"
+                          value={formData.contact}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              contact: e.target.value,
+                            }))
+                          }
+                          placeholder="+673 xxx xxxx"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="hours">Operating Hours</Label>
+                      <Input
+                        id="hours"
+                        value={formData.hours}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            hours: e.target.value,
+                          }))
+                        }
+                        placeholder="e.g., Mon-Fri: 8:00 AM - 5:00 PM"
+                      />
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="lat">Latitude *</Label>
+                          <Input
+                            id="lat"
+                            type="number"
+                            step="any"
+                            value={formData.coordinates.lat}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                coordinates: {
+                                  ...prev.coordinates,
+                                  lat: e.target.value,
+                                },
+                              }))
+                            }
+                            placeholder="4.5353"
+                            required
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="lng">Longitude *</Label>
+                          <Input
+                            id="lng"
+                            type="number"
+                            step="any"
+                            value={formData.coordinates.lng}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                coordinates: {
+                                  ...prev.coordinates,
+                                  lng: e.target.value,
+                                },
+                              }))
+                            }
+                            placeholder="114.7277"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="text-center">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() =>
+                            navigate("/eco-map?select-coords=true#/eco-map")
+                          }
+                          className="w-full"
+                        >
+                          <MapPin className="w-4 h-4 mr-2" />
+                          Select Coordinates on Map
+                        </Button>
+                        <p className="text-xs text-gray-500 mt-2">
+                          Click to open EcoMap, then click anywhere on the map
+                          to get coordinates
+                        </p>
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label>Services</Label>
+                      <Select
+                        onValueChange={(value) =>
+                          handleArrayInput("services", value)
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Add services" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {SERVICES.map((service) => (
+                            <SelectItem key={service} value={service}>
+                              {service}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {formData.services.map((service) => (
+                          <Badge key={service} variant="secondary">
+                            {service}
+                            <button
+                              type="button"
+                              onClick={() =>
+                                removeArrayItem("services", service)
+                              }
+                              className="ml-2 text-red-500"
+                            >
+                              ×
+                            </button>
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label>Waste Types</Label>
+                      <Select
+                        onValueChange={(value) =>
+                          handleArrayInput("wasteTypes", value)
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Add waste types" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {WASTE_TYPES.map((type) => (
+                            <SelectItem key={type} value={type}>
+                              {type}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {formData.wasteTypes.map((type) => (
+                          <Badge key={type} variant="secondary">
+                            {type}
+                            <button
+                              type="button"
+                              onClick={() =>
+                                removeArrayItem("wasteTypes", type)
+                              }
+                              className="ml-2 text-red-500"
+                            >
+                              ×
+                            </button>
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2 pt-4">
+                      <Button type="submit" className="green-primary">
+                        {editingFacility ? "Update" : "Add"} Facility
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setIsDialogOpen(false)}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </form>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
+        </header>
 
         <main className="p-4 lg:p-8">
           <div className="grid gap-6">
@@ -408,10 +714,13 @@ export default function AdminFacilities() {
                 <CardContent className="text-center py-12">
                   <Building className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    No facilities found
+                    No facilities added yet
                   </h3>
                   <p className="text-gray-600 mb-4">
-                    Try adjusting your search terms or filters
+                    Start by adding your first eco-facility to the map
+                  </p>
+                  <p className="text-gray-500">
+                    Use search and filters to find facilities
                   </p>
                 </CardContent>
               </Card>
@@ -525,190 +834,6 @@ export default function AdminFacilities() {
             )}
           </div>
         </main>
-
-        {/* Edit Dialog */}
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>
-                Edit Facility
-              </DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="name">Facility Name *</Label>
-                  <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        name: e.target.value,
-                      }))
-                    }
-                    placeholder="Enter facility name"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="category">Category *</Label>
-                  <Select
-                    value={formData.category}
-                    onValueChange={(value) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        category: value as keyof typeof ECO_CATEGORIES,
-                      }))
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.entries(ECO_CATEGORIES).map(
-                        ([key, category]) => (
-                          <SelectItem key={key} value={key}>
-                            {category.icon} {category.name}
-                          </SelectItem>
-                        ),
-                      )}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="address">Address *</Label>
-                <Input
-                  id="address"
-                  value={formData.address}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      address: e.target.value,
-                    }))
-                  }
-                  placeholder="Enter full address"
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="district">District *</Label>
-                  <Select
-                    value={formData.district}
-                    onValueChange={(value) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        district: value,
-                      }))
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select district" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {BRUNEI_DISTRICTS.map((district) => (
-                        <SelectItem key={district} value={district}>
-                          {district}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="contact">Contact</Label>
-                  <Input
-                    id="contact"
-                    value={formData.contact}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        contact: e.target.value,
-                      }))
-                    }
-                    placeholder="+673 xxx xxxx"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="hours">Operating Hours</Label>
-                <Input
-                  id="hours"
-                  value={formData.hours}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      hours: e.target.value,
-                    }))
-                  }
-                  placeholder="e.g., Mon-Fri: 8:00 AM - 5:00 PM"
-                />
-              </div>
-
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="lat">Latitude *</Label>
-                    <Input
-                      id="lat"
-                      type="number"
-                      step="any"
-                      value={formData.coordinates.lat}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          coordinates: {
-                            ...prev.coordinates,
-                            lat: e.target.value,
-                          },
-                        }))
-                      }
-                      placeholder="4.5353"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="lng">Longitude *</Label>
-                    <Input
-                      id="lng"
-                      type="number"
-                      step="any"
-                      value={formData.coordinates.lng}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          coordinates: {
-                            ...prev.coordinates,
-                            lng: e.target.value,
-                          },
-                        }))
-                      }
-                      placeholder="114.7277"
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex gap-2 pt-4">
-                <Button type="submit" className="green-primary">
-                  Update Facility
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setIsDialogOpen(false)}
-                >
-                  Cancel
-                </Button>
-              </div>
-            </form>
-          </DialogContent>
-        </Dialog>
       </div>
     </div>
   );
