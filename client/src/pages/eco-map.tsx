@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from "react-leaflet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Sidebar from "@/components/dashboard/sidebar";
 import EcoMapControls from "@/components/eco-map/EcoMapControls";
@@ -120,6 +120,8 @@ export default function EcoMap() {
   const [mapCenter, setMapCenter] = useState<[number, number]>(BRUNEI_CENTER);
   const [mapZoom, setMapZoom] = useState(10);
   const [allLocations, setAllLocations] = useState<EcoLocation[]>(ECO_LOCATIONS);
+  const [isSelectingCoords, setIsSelectingCoords] = useState(false);
+  const [selectedCoords, setSelectedCoords] = useState<[number, number] | null>(null);
 
   const isMobile = useIsMobile();
   const { toast } = useToast();
@@ -234,6 +236,48 @@ export default function EcoMap() {
       },
     );
   };
+
+  // MapController component
+  const MapController = ({ center, zoom }: { center: [number, number], zoom: number }) => {
+    const map = useMap();
+    
+    useEffect(() => {
+      map.setView(center, zoom);
+    }, [center, zoom, map]);
+    
+    return null;
+  };
+
+  // Coordinate Selector Component
+  const CoordinateSelector = () => {
+    useMapEvents({
+      click: (e) => {
+        if (isSelectingCoords) {
+          const { lat, lng } = e.latlng;
+          setSelectedCoords([lat, lng]);
+          // Store coordinates for admin-facilities form
+          localStorage.setItem('selected-coordinates', JSON.stringify([lat, lng]));
+          toast({
+            title: "Coordinates Selected",
+            description: `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`,
+          });
+        }
+      },
+    });
+    return null;
+  };
+
+  // Check if we're in coordinate selection mode
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('select-coords') === 'true') {
+      setIsSelectingCoords(true);
+      toast({
+        title: "Coordinate Selection Mode",
+        description: "Click anywhere on the map to select coordinates",
+      });
+    }
+  }, []);
 
   // Load CSS for Leaflet
   useEffect(() => {
@@ -350,6 +394,7 @@ export default function EcoMap() {
                 zoomControl={false}
               >
                 <MapController center={mapCenter} zoom={mapZoom} />
+                <CoordinateSelector />
                 <TileLayer
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -364,6 +409,29 @@ export default function EcoMap() {
                     <Popup>
                       <div className="text-center">
                         <strong>Your Location</strong>
+                      </div>
+                    </Popup>
+                  </Marker>
+                )}
+
+                {/* Selected coordinates marker */}
+                {selectedCoords && (
+                  <Marker
+                    position={selectedCoords}
+                    icon={L.divIcon({
+                      className: "selected-coord-marker",
+                      html: `<div style="background: #ff4444; width: 20px; height: 20px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>`,
+                      iconSize: [20, 20],
+                      iconAnchor: [10, 10],
+                    })}
+                  >
+                    <Popup>
+                      <div className="text-center">
+                        <strong>Selected Location</strong>
+                        <br />
+                        <small>Lat: {selectedCoords[0].toFixed(6)}</small>
+                        <br />
+                        <small>Lng: {selectedCoords[1].toFixed(6)}</small>
                       </div>
                     </Popup>
                   </Marker>
@@ -432,6 +500,7 @@ export default function EcoMap() {
                   style={{ height: "100%", width: "100%" }}
                 >
                   <MapController center={mapCenter} zoom={mapZoom} />
+                  <CoordinateSelector />
                   <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -446,6 +515,29 @@ export default function EcoMap() {
                       <Popup>
                         <div className="text-center">
                           <strong>Your Location</strong>
+                        </div>
+                      </Popup>
+                    </Marker>
+                  )}
+
+                  {/* Selected coordinates marker */}
+                  {selectedCoords && (
+                    <Marker
+                      position={selectedCoords}
+                      icon={L.divIcon({
+                        className: "selected-coord-marker",
+                        html: `<div style="background: #ff4444; width: 20px; height: 20px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>`,
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10],
+                      })}
+                    >
+                      <Popup>
+                        <div className="text-center">
+                          <strong>Selected Location</strong>
+                          <br />
+                          <small>Lat: {selectedCoords[0].toFixed(6)}</small>
+                          <br />
+                          <small>Lng: {selectedCoords[1].toFixed(6)}</small>
                         </div>
                       </Popup>
                     </Marker>

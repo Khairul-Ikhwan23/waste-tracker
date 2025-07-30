@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import Sidebar from "@/components/dashboard/sidebar";
 import { Menu } from "lucide-react";
-import { EcoLocation, ECO_CATEGORIES } from "@/lib/eco-map-data";
+import { EcoLocation, ECO_CATEGORIES, ECO_LOCATIONS } from "@/lib/eco-map-data";
 
 const BRUNEI_DISTRICTS = ["Brunei-Muara", "Belait", "Tutong", "Temburong"];
 
@@ -56,22 +56,68 @@ export default function AdminFacilities() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Load facilities from localStorage
+  // Load facilities from localStorage and include existing ECO_LOCATIONS
   useEffect(() => {
     const savedFacilities = localStorage.getItem("admin-facilities");
-    if (savedFacilities) {
-      setFacilities(JSON.parse(savedFacilities));
-    }
+    const adminFacilities = savedFacilities ? JSON.parse(savedFacilities) : [];
+    
+    // Include existing ECO_LOCATIONS as read-only entries
+    const existingFacilities = ECO_LOCATIONS.map(location => ({ 
+      ...location, 
+      isReadOnly: true 
+    }));
+    
+    setFacilities([...existingFacilities, ...adminFacilities]);
   }, []);
 
-  // Save facilities to localStorage
-  const saveFacilities = (newFacilities: EcoLocation[]) => {
-    setFacilities(newFacilities);
-    localStorage.setItem("admin-facilities", JSON.stringify(newFacilities));
+  // Listen for coordinate selection from EcoMap
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const selectedCoords = localStorage.getItem('selected-coordinates');
+      if (selectedCoords) {
+        const coords = JSON.parse(selectedCoords);
+        setFormData(prev => ({
+          ...prev,
+          coordinates: {
+            lat: coords[0].toString(),
+            lng: coords[1].toString()
+          }
+        }));
+        // Clear the stored coordinates
+        localStorage.removeItem('selected-coordinates');
+        toast({
+          title: "Coordinates Updated",
+          description: `Location set to ${coords[0].toFixed(6)}, ${coords[1].toFixed(6)}`,
+        });
+      }
+    };
+
+    // Check immediately
+    handleStorageChange();
+
+    // Listen for storage events (from other tabs)
+    window.addEventListener('storage', handleStorageChange);
     
-    // Also update the eco-map data
-    const allFacilities = [...newFacilities];
-    localStorage.setItem("eco-locations", JSON.stringify(allFacilities));
+    // Also listen for focus events (when returning from map tab)
+    window.addEventListener('focus', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('focus', handleStorageChange);
+    };
+  }, [toast]);
+
+  // Save facilities to localStorage (only admin-added ones)
+  const saveFacilities = (newFacilities: EcoLocation[]) => {
+    // Separate existing and admin facilities
+    const existingFacilities = ECO_LOCATIONS.map(location => ({ 
+      ...location, 
+      isReadOnly: true 
+    }));
+    const adminOnlyFacilities = newFacilities.filter(f => !f.isReadOnly);
+    
+    setFacilities([...existingFacilities, ...adminOnlyFacilities]);
+    localStorage.setItem("admin-facilities", JSON.stringify(adminOnlyFacilities));
   };
 
   const resetForm = () => {
@@ -145,6 +191,15 @@ export default function AdminFacilities() {
   };
 
   const handleEdit = (facility: EcoLocation) => {
+    if (facility.isReadOnly) {
+      toast({
+        title: "Cannot Edit",
+        description: "This is a system facility and cannot be modified",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     setEditingFacility(facility);
     setFormData({
       name: facility.name,
@@ -164,6 +219,16 @@ export default function AdminFacilities() {
   };
 
   const handleDelete = (id: string) => {
+    const facilityToDelete = facilities.find(f => f.id === id);
+    if (facilityToDelete?.isReadOnly) {
+      toast({
+        title: "Cannot Delete",
+        description: "This is a system facility and cannot be deleted",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     const updatedFacilities = facilities.filter(f => f.id !== id);
     saveFacilities(updatedFacilities);
     toast({
@@ -232,7 +297,7 @@ export default function AdminFacilities() {
                     Add Facility
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto flex flex-col">
                   <DialogHeader>
                     <DialogTitle>
                       {editingFacility ? "Edit Facility" : "Add New Facility"}
@@ -321,36 +386,52 @@ export default function AdminFacilities() {
                       />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="lat">Latitude *</Label>
-                        <Input
-                          id="lat"
-                          type="number"
-                          step="any"
-                          value={formData.coordinates.lat}
-                          onChange={(e) => setFormData(prev => ({ 
-                            ...prev, 
-                            coordinates: { ...prev.coordinates, lat: e.target.value }
-                          }))}
-                          placeholder="4.5353"
-                          required
-                        />
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="lat">Latitude *</Label>
+                          <Input
+                            id="lat"
+                            type="number"
+                            step="any"
+                            value={formData.coordinates.lat}
+                            onChange={(e) => setFormData(prev => ({ 
+                              ...prev, 
+                              coordinates: { ...prev.coordinates, lat: e.target.value }
+                            }))}
+                            placeholder="4.5353"
+                            required
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="lng">Longitude *</Label>
+                          <Input
+                            id="lng"
+                            type="number"
+                            step="any"
+                            value={formData.coordinates.lng}
+                            onChange={(e) => setFormData(prev => ({ 
+                              ...prev, 
+                              coordinates: { ...prev.coordinates, lng: e.target.value }
+                            }))}
+                            placeholder="114.7277"
+                            required
+                          />
+                        </div>
                       </div>
-                      <div>
-                        <Label htmlFor="lng">Longitude *</Label>
-                        <Input
-                          id="lng"
-                          type="number"
-                          step="any"
-                          value={formData.coordinates.lng}
-                          onChange={(e) => setFormData(prev => ({ 
-                            ...prev, 
-                            coordinates: { ...prev.coordinates, lng: e.target.value }
-                          }))}
-                          placeholder="114.7277"
-                          required
-                        />
+                      <div className="text-center">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => window.open('/eco-map?select-coords=true', '_blank')}
+                          className="w-full"
+                        >
+                          <MapPin className="w-4 h-4 mr-2" />
+                          Select Coordinates on Map
+                        </Button>
+                        <p className="text-xs text-gray-500 mt-2">
+                          Click to open EcoMap, then click anywhere on the map to get coordinates
+                        </p>
                       </div>
                     </div>
 
@@ -459,22 +540,29 @@ export default function AdminFacilities() {
                       <div className="flex items-start justify-between">
                         <div>
                           <CardTitle className="text-lg">{facility.name}</CardTitle>
-                          <Badge 
-                            variant="secondary" 
-                            className="mt-2"
-                            style={{ 
-                              backgroundColor: ECO_CATEGORIES[facility.category].color + '20',
-                              color: ECO_CATEGORIES[facility.category].color 
-                            }}
-                          >
-                            {ECO_CATEGORIES[facility.category].icon} {ECO_CATEGORIES[facility.category].name}
-                          </Badge>
+                          <div className="flex flex-wrap gap-2 mt-2">
+                            <Badge 
+                              variant="secondary" 
+                              style={{ 
+                                backgroundColor: ECO_CATEGORIES[facility.category].color + '20',
+                                color: ECO_CATEGORIES[facility.category].color 
+                              }}
+                            >
+                              {ECO_CATEGORIES[facility.category].icon} {ECO_CATEGORIES[facility.category].name}
+                            </Badge>
+                            {facility.isReadOnly && (
+                              <Badge variant="outline" className="text-xs">
+                                System
+                              </Badge>
+                            )}
+                          </div>
                         </div>
                         <div className="flex gap-1">
                           <Button
                             variant="ghost"
                             size="sm"
                             onClick={() => handleEdit(facility)}
+                            disabled={facility.isReadOnly}
                           >
                             <Edit className="h-4 w-4" />
                           </Button>
@@ -483,6 +571,7 @@ export default function AdminFacilities() {
                             size="sm"
                             onClick={() => handleDelete(facility.id)}
                             className="text-red-600 hover:text-red-700"
+                            disabled={facility.isReadOnly}
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>

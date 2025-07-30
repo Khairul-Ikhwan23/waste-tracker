@@ -17,6 +17,7 @@ export interface EcoLocation {
   contact?: string;
   services: string[];
   wasteTypes: string[];
+  isReadOnly?: boolean;
 }
 
 export const BRUNEI_CENTER: [number, number] = [4.5353, 114.7277]; // Bandar Seri Begawan
