@@ -1,37 +1,40 @@
-import { useState, useEffect, useMemo } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import { useIsMobile } from '@/hooks/use-mobile';
-import Sidebar from '@/components/dashboard/sidebar';
-import EcoMapControls from '@/components/eco-map/EcoMapControls';
-import LocationPopup from '@/components/eco-map/LocationPopup';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { 
-  ECO_LOCATIONS, 
-  ECO_CATEGORIES, 
+import { useState, useEffect, useMemo } from "react";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import { useIsMobile } from "@/hooks/use-mobile";
+import Sidebar from "@/components/dashboard/sidebar";
+import EcoMapControls from "@/components/eco-map/EcoMapControls";
+import LocationPopup from "@/components/eco-map/LocationPopup";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  ECO_LOCATIONS,
+  ECO_CATEGORIES,
   BRUNEI_CENTER,
   getLocationsWithinRadius,
   calculateDistance,
-  type EcoLocation 
-} from '@/lib/eco-map-data';
-import { Menu, MapPin, Loader2, AlertTriangle } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import L from 'leaflet';
+  type EcoLocation,
+} from "@/lib/eco-map-data";
+import { Menu, MapPin, Loader2, AlertTriangle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import L from "leaflet";
 
 // Fix for default markers in react-leaflet
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  iconRetinaUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+  iconUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
 });
 
 // Custom marker icons for each category
 const createCustomIcon = (category: keyof typeof ECO_CATEGORIES) => {
   const categoryInfo = ECO_CATEGORIES[category];
   return L.divIcon({
-    className: 'custom-marker',
+    className: "custom-marker",
     html: `
       <div style="
         background-color: ${categoryInfo.color};
@@ -50,14 +53,14 @@ const createCustomIcon = (category: keyof typeof ECO_CATEGORIES) => {
     `,
     iconSize: [24, 24],
     iconAnchor: [12, 12],
-    popupAnchor: [0, -12]
+    popupAnchor: [0, -12],
   });
 };
 
 // User location marker
 const createUserLocationIcon = () => {
   return L.divIcon({
-    className: 'user-location-marker',
+    className: "user-location-marker",
     html: `
       <div style="
         background-color: #ef4444;
@@ -82,46 +85,54 @@ const createUserLocationIcon = () => {
       </div>
     `,
     iconSize: [16, 16],
-    iconAnchor: [8, 8]
+    iconAnchor: [8, 8],
   });
 };
 
 // Component to handle map center updates
-function MapController({ center, zoom }: { center: [number, number], zoom: number }) {
+function MapController({
+  center,
+  zoom,
+}: {
+  center: [number, number];
+  zoom: number;
+}) {
   const map = useMap();
-  
+
   useEffect(() => {
     map.setView(center, zoom);
   }, [center, zoom, map]);
-  
+
   return null;
 }
 
 export default function EcoMap() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
+  const [userLocation, setUserLocation] = useState<[number, number] | null>(
+    null,
+  );
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
   const [visibleCategories, setVisibleCategories] = useState<Set<string>>(
-    new Set(Object.keys(ECO_CATEGORIES))
+    new Set(Object.keys(ECO_CATEGORIES)),
   );
   const [proximityRadius, setProximityRadius] = useState(25);
   const [mapCenter, setMapCenter] = useState<[number, number]>(BRUNEI_CENTER);
   const [mapZoom, setMapZoom] = useState(10);
-  
+
   const isMobile = useIsMobile();
   const { toast } = useToast();
 
   // Filter locations based on visible categories and proximity
   const filteredLocations = useMemo(() => {
-    let filtered = ECO_LOCATIONS.filter(location => 
-      visibleCategories.has(location.category)
+    let filtered = ECO_LOCATIONS.filter((location) =>
+      visibleCategories.has(location.category),
     );
 
     if (userLocation) {
       filtered = getLocationsWithinRadius(userLocation, proximityRadius);
-      filtered = filtered.filter(location => 
-        visibleCategories.has(location.category)
+      filtered = filtered.filter((location) =>
+        visibleCategories.has(location.category),
       );
     }
 
@@ -130,7 +141,7 @@ export default function EcoMap() {
 
   // Handle category toggle
   const handleCategoryToggle = (category: string) => {
-    setVisibleCategories(prev => {
+    setVisibleCategories((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(category)) {
         newSet.delete(category);
@@ -152,7 +163,7 @@ export default function EcoMap() {
     setLocationError(null);
 
     if (!navigator.geolocation) {
-      setLocationError('Geolocation is not supported by this browser');
+      setLocationError("Geolocation is not supported by this browser");
       setIsLoadingLocation(false);
       return;
     }
@@ -163,41 +174,41 @@ export default function EcoMap() {
         const newLocation: [number, number] = [latitude, longitude];
         setUserLocation(newLocation);
         setMapCenter(newLocation);
-        setMapZoom(12);
+        setMapZoom(16);
         setIsLoadingLocation(false);
-        
+
         toast({
           title: "Location Found",
           description: "Your location has been updated on the map",
         });
       },
       (error) => {
-        let errorMessage = 'Unable to retrieve your location';
+        let errorMessage = "Unable to retrieve your location";
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            errorMessage = 'Location access denied by user';
+            errorMessage = "Location access denied by user";
             break;
           case error.POSITION_UNAVAILABLE:
-            errorMessage = 'Location information is unavailable';
+            errorMessage = "Location information is unavailable";
             break;
           case error.TIMEOUT:
-            errorMessage = 'Location request timed out';
+            errorMessage = "Location request timed out";
             break;
         }
         setLocationError(errorMessage);
         setIsLoadingLocation(false);
-        
+
         toast({
           title: "Location Error",
           description: errorMessage,
-          variant: "destructive"
+          variant: "destructive",
         });
       },
       {
         enableHighAccuracy: true,
         timeout: 10000,
-        maximumAge: 300000 // 5 minutes
-      }
+        maximumAge: 300000, // 5 minutes
+      },
     );
   };
 
@@ -206,14 +217,14 @@ export default function EcoMap() {
     // Inject Leaflet CSS if not already present
     const existingLink = document.querySelector('link[href*="leaflet"]');
     if (!existingLink) {
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = 'https://unpkg.com/leaflet@1.7.1/dist/leaflet.css';
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "https://unpkg.com/leaflet@1.7.1/dist/leaflet.css";
       document.head.appendChild(link);
     }
 
     // Add custom CSS for animations
-    const style = document.createElement('style');
+    const style = document.createElement("style");
     style.textContent = `
       @keyframes pulse {
         0% { transform: scale(1); opacity: 0.3; }
@@ -239,16 +250,16 @@ export default function EcoMap() {
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
-      <Sidebar 
-        isOpen={isMobileMenuOpen} 
+      <Sidebar
+        isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
         isMobile={isMobile}
       />
 
       {/* Mobile Overlay */}
       {isMobile && isMobileMenuOpen && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-[2000] lg:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
@@ -269,9 +280,12 @@ export default function EcoMap() {
                   <Menu className="h-5 w-5" />
                 </Button>
                 <div className="flex-1 min-w-0">
-                  <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 truncate">EcoMap</h1>
+                  <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 truncate">
+                    EcoMap
+                  </h1>
                   <p className="text-sm text-gray-600 mt-1 hidden sm:block">
-                    Discover recycling facilities and eco-friendly locations in Brunei
+                    Discover recycling facilities and eco-friendly locations in
+                    Brunei
                   </p>
                 </div>
               </div>
@@ -287,7 +301,7 @@ export default function EcoMap() {
                   ) : (
                     <MapPin className="w-4 h-4 mr-2" />
                   )}
-                  {isMobile ? 'Locate' : 'Find Me'}
+                  {isMobile ? "Locate" : "Find Me"}
                 </Button>
               </div>
             </div>
@@ -297,9 +311,60 @@ export default function EcoMap() {
         {/* Map Content */}
         <main className="flex-1 h-[calc(100vh-80px)] relative">
           {isMobile ? (
-            // Mobile layout: Controls on top, map below
-            <div className="h-full flex flex-col">
-              <div className="p-4 bg-white border-b">
+            // Mobile layout: Map full screen with controls at bottom
+            <div className="h-full relative">
+              {locationError && (
+                <Alert className="absolute top-4 left-4 right-4 z-[1000]">
+                  <AlertTriangle className="h-4 w-4" />
+                  <AlertDescription>{locationError}</AlertDescription>
+                </Alert>
+              )}
+
+              <MapContainer
+                center={mapCenter}
+                zoom={mapZoom}
+                style={{ height: "100%", width: "100%" }}
+                zoomControl={false}
+              >
+                <MapController center={mapCenter} zoom={mapZoom} />
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+
+                {/* User location marker */}
+                {userLocation && (
+                  <Marker
+                    position={userLocation}
+                    icon={createUserLocationIcon()}
+                  >
+                    <Popup>
+                      <div className="text-center">
+                        <strong>Your Location</strong>
+                      </div>
+                    </Popup>
+                  </Marker>
+                )}
+
+                {/* Eco location markers */}
+                {filteredLocations.map((location) => (
+                  <Marker
+                    key={location.id}
+                    position={location.coordinates}
+                    icon={createCustomIcon(location.category)}
+                  >
+                    <Popup maxWidth={320} minWidth={300}>
+                      <LocationPopup
+                        location={location}
+                        userLocation={userLocation}
+                      />
+                    </Popup>
+                  </Marker>
+                ))}
+              </MapContainer>
+
+              {/* Bottom Controls for Mobile */}
+              <div className="absolute bottom-4 left-4 right-4 z-[1000]">
                 <EcoMapControls
                   visibleCategories={visibleCategories}
                   onCategoryToggle={handleCategoryToggle}
@@ -311,58 +376,6 @@ export default function EcoMap() {
                   visibleLocations={filteredLocations.length}
                   isMobile={true}
                 />
-              </div>
-              
-              <div className="flex-1 relative">
-                {locationError && (
-                  <Alert className="absolute top-4 left-4 right-4 z-[1000]">
-                    <AlertTriangle className="h-4 w-4" />
-                    <AlertDescription>{locationError}</AlertDescription>
-                  </Alert>
-                )}
-                
-                <MapContainer
-                  center={mapCenter}
-                  zoom={mapZoom}
-                  style={{ height: '100%', width: '100%' }}
-                  zoomControl={false}
-                >
-                  <MapController center={mapCenter} zoom={mapZoom} />
-                  <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  />
-                  
-                  {/* User location marker */}
-                  {userLocation && (
-                    <Marker
-                      position={userLocation}
-                      icon={createUserLocationIcon()}
-                    >
-                      <Popup>
-                        <div className="text-center">
-                          <strong>Your Location</strong>
-                        </div>
-                      </Popup>
-                    </Marker>
-                  )}
-                  
-                  {/* Eco location markers */}
-                  {filteredLocations.map((location) => (
-                    <Marker
-                      key={location.id}
-                      position={location.coordinates}
-                      icon={createCustomIcon(location.category)}
-                    >
-                      <Popup maxWidth={320} minWidth={300}>
-                        <LocationPopup 
-                          location={location} 
-                          userLocation={userLocation}
-                        />
-                      </Popup>
-                    </Marker>
-                  ))}
-                </MapContainer>
               </div>
             </div>
           ) : (
@@ -381,7 +394,7 @@ export default function EcoMap() {
                   isMobile={false}
                 />
               </div>
-              
+
               <div className="flex-1 relative">
                 {locationError && (
                   <Alert className="absolute top-4 left-4 right-4 z-[1000]">
@@ -389,18 +402,18 @@ export default function EcoMap() {
                     <AlertDescription>{locationError}</AlertDescription>
                   </Alert>
                 )}
-                
+
                 <MapContainer
                   center={mapCenter}
                   zoom={mapZoom}
-                  style={{ height: '100%', width: '100%' }}
+                  style={{ height: "100%", width: "100%" }}
                 >
                   <MapController center={mapCenter} zoom={mapZoom} />
                   <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   />
-                  
+
                   {/* User location marker */}
                   {userLocation && (
                     <Marker
@@ -414,7 +427,7 @@ export default function EcoMap() {
                       </Popup>
                     </Marker>
                   )}
-                  
+
                   {/* Eco location markers */}
                   {filteredLocations.map((location) => (
                     <Marker
@@ -423,8 +436,8 @@ export default function EcoMap() {
                       icon={createCustomIcon(location.category)}
                     >
                       <Popup maxWidth={320} minWidth={300}>
-                        <LocationPopup 
-                          location={location} 
+                        <LocationPopup
+                          location={location}
                           userLocation={userLocation}
                         />
                       </Popup>

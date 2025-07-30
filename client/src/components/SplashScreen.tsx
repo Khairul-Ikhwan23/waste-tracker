@@ -26,7 +26,7 @@ export default function SplashScreen() {
 
   return (
     <div 
-      className={`fixed inset-0 bg-green-500 bg-opacity-50 flex items-center justify-center z-50 transition-transform duration-500 ease-in-out ${
+      className={`fixed inset-0 bg-green-500 bg-opacity-50 flex items-center justify-center z-[9999] transition-transform duration-500 ease-in-out ${
         isAnimating ? '-translate-y-full' : 'translate-y-0'
       }`}
     >
