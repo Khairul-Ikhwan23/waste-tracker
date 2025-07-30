@@ -18,7 +18,6 @@ import PickupHistory        from "@/pages/pickup-history";
 import EcoRewards           from "@/pages/eco-rewards";
 import EcoMap               from "@/pages/eco-map";
 import Payments             from "@/pages/payments";
-import AdminFacilities      from "@/pages/admin-facilities";
 import NotFound             from "@/pages/not-found";
 import SplashScreen         from "@/components/SplashScreen";
 
@@ -60,7 +59,6 @@ function RouterComponent() {
         <Route path="/eco-rewards" component={EcoRewards} />
         <Route path="/eco-map" component={EcoMap} />
         <Route path="/payments" component={Payments} />
-        <Route path="/admin/facilities" component={AdminFacilities} />
         <Route component={NotFound} />
       </Switch>
     </Router>

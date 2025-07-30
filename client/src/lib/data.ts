@@ -647,13 +647,12 @@ export const rolePermissions = {
     dashboardStats: ['todaysPickups', 'routeList', 'completedPickups']
   },
   Admin: {
-    canAccess: ['dashboard', 'profile', 'pickup-requests', 'pickup-history', 'eco-rewards', 'eco-map', 'recycling-metrics', 'environmental-reports', 'route-planner', 'payments', 'admin-facilities', 'settings'],
+    canAccess: ['dashboard', 'profile', 'pickup-requests', 'pickup-history', 'eco-rewards', 'eco-map', 'recycling-metrics', 'environmental-reports', 'route-planner', 'payments', 'settings'],
     canViewOthers: true,
     canSchedule: true,
     canViewRoutes: true,
     canManageUsers: true,
     canViewMetrics: true,
-    canManageFacilities: true,
     dashboardStats: ['allUsers', 'systemMetrics', 'totalImpact', 'platformStats']
   }
 };
