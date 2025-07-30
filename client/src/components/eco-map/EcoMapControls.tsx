@@ -5,10 +5,8 @@ import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ECO_CATEGORIES } from '@/lib/eco-map-data';
-import { MapPin, Filter, Settings, Eye, EyeOff, Edit, X, Search } from 'lucide-react';
+import { MapPin, Filter, Settings, Eye, EyeOff, Plus, Edit, X } from 'lucide-react';
 import { useUser } from '@/contexts/UserContext';
 
 interface EcoMapControlsProps {
@@ -21,12 +19,8 @@ interface EcoMapControlsProps {
   totalLocations: number;
   visibleLocations: number;
   isMobile?: boolean;
-  adminMode?: 'none' | 'edit';
-  onAdminModeChange?: (mode: 'none' | 'edit') => void;
-  searchQuery?: string;
-  onSearchChange?: (query: string) => void;
-  facilityFilter?: string;
-  onFacilityFilterChange?: (filter: string) => void;
+  adminMode?: 'none' | 'add' | 'edit';
+  onAdminModeChange?: (mode: 'none' | 'add' | 'edit') => void;
 }
 
 export default function EcoMapControls({
@@ -40,11 +34,7 @@ export default function EcoMapControls({
   visibleLocations,
   isMobile = false,
   adminMode = 'none',
-  onAdminModeChange,
-  searchQuery = '',
-  onSearchChange,
-  facilityFilter = 'all',
-  onFacilityFilterChange
+  onAdminModeChange
 }: EcoMapControlsProps) {
   const [isExpanded, setIsExpanded] = useState(!isMobile);
   const { currentUser } = useUser();
@@ -78,52 +68,46 @@ export default function EcoMapControls({
         <CardContent className={`space-y-${isMobile ? '4' : '6'} ${isMobile ? 'max-h-[40vh] overflow-y-auto' : ''}`}>
           {/* Admin Controls */}
           {isAdmin && (
-            <div className="space-y-3 border-b pb-4">
-              <Label className="text-sm font-medium">Facility Management</Label>
-              
-              {/* Search */}
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <Input
-                  placeholder="Search facilities..."
-                  value={searchQuery}
-                  onChange={(e) => onSearchChange?.(e.target.value)}
-                  className="pl-10"
-                />
+            <div className="space-y-2 border-b pb-4">
+              <Label className="text-sm font-medium">Admin Tools</Label>
+              <div className="flex gap-2">
+                <Button
+                  variant={adminMode === 'add' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => onAdminModeChange?.(adminMode === 'add' ? 'none' : 'add')}
+                  className={adminMode === 'add' ? 'green-primary' : ''}
+                >
+                  <Plus className="w-4 h-4 mr-1" />
+                  Add
+                </Button>
+                <Button
+                  variant={adminMode === 'edit' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => onAdminModeChange?.(adminMode === 'edit' ? 'none' : 'edit')}
+                  className={adminMode === 'edit' ? 'green-primary' : ''}
+                >
+                  <Edit className="w-4 h-4 mr-1" />
+                  Edit
+                </Button>
+                {adminMode !== 'none' && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onAdminModeChange?.('none')}
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                )}
               </div>
-              
-              {/* Filter */}
-              <Select value={facilityFilter} onValueChange={onFacilityFilterChange}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Filter by type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Facilities</SelectItem>
-                  <SelectItem value="editable">Editable Only</SelectItem>
-                  <SelectItem value="system">System Only</SelectItem>
-                  {Object.entries(ECO_CATEGORIES).map(([key, category]) => (
-                    <SelectItem key={key} value={key}>
-                      {category.icon} {category.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              
-              {/* Edit Mode Toggle */}
-              <Button
-                variant={adminMode === 'edit' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => onAdminModeChange?.(adminMode === 'edit' ? 'none' : 'edit')}
-                className="w-full"
-              >
-                <Edit className="w-4 h-4 mr-2" />
-                {adminMode === 'edit' ? 'Exit Edit Mode' : 'Edit Facilities'}
-              </Button>
-              
+              {adminMode === 'add' && (
+                <div className="text-xs text-blue-600 bg-blue-50 p-2 rounded">
+                  Click anywhere on the map to add a new facility
+                </div>
+              )}
               {adminMode === 'edit' && (
-                <p className="text-xs text-gray-600 mt-2 bg-orange-50 p-2 rounded">
-                  Click on facilities to edit or delete them. System facilities cannot be modified.
-                </p>
+                <div className="text-xs text-orange-600 bg-orange-50 p-2 rounded">
+                  Click on facility markers to edit or delete them
+                </div>
               )}
             </div>
           )}
