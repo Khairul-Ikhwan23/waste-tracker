@@ -15,7 +15,7 @@ import {
   Gift,
   CreditCard,
 } from "lucide-react";
-import Logo from "@assets/Kitar360_Logo_1752921507044.png";
+import Logo from "@assets/logo.png";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useLocation } from "wouter";
