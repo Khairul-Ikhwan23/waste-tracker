@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, FileText, Coins, Truck, BarChart3, Route } from "lucide-react";
+import { Plus, FileText, Coins, Truck, BarChart3, Route, Building } from "lucide-react";
 import { useUser } from "@/contexts/UserContext";
 import { useLocation } from "wouter";
 
@@ -55,14 +55,24 @@ export default function QuickActions() {
     }
 
     if (currentUser.role === "Admin") {
-      roleSpecificActions.push({
-        title: "Analytics",
-        icon: BarChart3,
-        color: "bg-indigo-600 hover:bg-indigo-700",
-        textColor: "text-white",
-        path: "/recycling-metrics",
-        roles: ["Admin"]
-      });
+      roleSpecificActions.push(
+        {
+          title: "Analytics",
+          icon: BarChart3,
+          color: "bg-indigo-600 hover:bg-indigo-700",
+          textColor: "text-white",
+          path: "/recycling-metrics",
+          roles: ["Admin"]
+        },
+        {
+          title: "Manage Facilities",
+          icon: Building,
+          color: "bg-teal-600 hover:bg-teal-700",
+          textColor: "text-white",
+          path: "/admin-facilities",
+          roles: ["Admin"]
+        }
+      );
     }
 
     return [...baseActions, ...roleSpecificActions].filter(action => 

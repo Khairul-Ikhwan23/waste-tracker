@@ -119,13 +119,36 @@ export default function EcoMap() {
   const [proximityRadius, setProximityRadius] = useState(25);
   const [mapCenter, setMapCenter] = useState<[number, number]>(BRUNEI_CENTER);
   const [mapZoom, setMapZoom] = useState(10);
+  const [allLocations, setAllLocations] = useState<EcoLocation[]>(ECO_LOCATIONS);
 
   const isMobile = useIsMobile();
   const { toast } = useToast();
 
+  // Load admin facilities on component mount and when localStorage changes
+  useEffect(() => {
+    const loadAllFacilities = () => {
+      const adminFacilities = localStorage.getItem("admin-facilities");
+      const adminFacilitiesParsed = adminFacilities ? JSON.parse(adminFacilities) : [];
+      const combined = [...ECO_LOCATIONS, ...adminFacilitiesParsed];
+      setAllLocations(combined);
+    };
+
+    loadAllFacilities();
+
+    // Listen for localStorage changes
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "admin-facilities") {
+        loadAllFacilities();
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
   // Filter locations based on visible categories and proximity
   const filteredLocations = useMemo(() => {
-    let filtered = ECO_LOCATIONS.filter((location) =>
+    let filtered = allLocations.filter((location) =>
       visibleCategories.has(location.category),
     );
 
@@ -137,7 +160,7 @@ export default function EcoMap() {
     }
 
     return filtered;
-  }, [visibleCategories, userLocation, proximityRadius]);
+  }, [allLocations, visibleCategories, userLocation, proximityRadius]);
 
   // Handle category toggle
   const handleCategoryToggle = (category: string) => {
@@ -372,7 +395,7 @@ export default function EcoMap() {
                   onProximityChange={handleProximityChange}
                   userLocation={userLocation}
                   onLocationRequest={handleLocationRequest}
-                  totalLocations={ECO_LOCATIONS.length}
+                  totalLocations={allLocations.length}
                   visibleLocations={filteredLocations.length}
                   isMobile={true}
                 />
@@ -389,7 +412,7 @@ export default function EcoMap() {
                   onProximityChange={handleProximityChange}
                   userLocation={userLocation}
                   onLocationRequest={handleLocationRequest}
-                  totalLocations={ECO_LOCATIONS.length}
+                  totalLocations={allLocations.length}
                   visibleLocations={filteredLocations.length}
                   isMobile={false}
                 />
