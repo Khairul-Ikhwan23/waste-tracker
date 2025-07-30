@@ -148,19 +148,12 @@ export default function FacilityFormPopup({
       onClick={onClose}
     >
       <Card 
-        className={`w-full bg-white ${
+        className={`w-full bg-white shadow-xl ${
           isMobile 
-            ? 'max-w-sm max-h-[85vh] mx-4' 
-            : 'max-w-lg max-h-[80vh]'
+            ? 'max-w-sm max-h-[90vh] mx-2' 
+            : 'max-w-md max-h-[85vh]'
         } overflow-y-auto`}
         onClick={(e) => e.stopPropagation()}
-        style={!isMobile && position ? {
-          position: 'fixed',
-          left: Math.min(Math.max(position.x - 200, 20), window.innerWidth - 420),
-          top: Math.min(Math.max(position.y - 100, 20), window.innerHeight - 500),
-          transform: 'none',
-          maxWidth: '400px'
-        } : {}}
       >
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>
