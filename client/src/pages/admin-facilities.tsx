@@ -1,28 +1,65 @@
 import { useState, useEffect } from "react";
-import { Plus, Edit, Trash2, MapPin, Building, Phone, Clock } from "lucide-react";
+import {
+  Plus,
+  Edit,
+  Trash2,
+  MapPin,
+  Building,
+  Phone,
+  Clock,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import Sidebar from "@/components/dashboard/sidebar";
 import { Menu } from "lucide-react";
 import { EcoLocation, ECO_CATEGORIES, ECO_LOCATIONS } from "@/lib/eco-map-data";
+import { navigate } from "wouter/use-browser-location";
 
 const BRUNEI_DISTRICTS = ["Brunei-Muara", "Belait", "Tutong", "Temburong"];
 
 const WASTE_TYPES = [
-  "Paper", "Plastic", "Metal", "Glass", "Electronic", "Organic", "Cardboard", 
-  "Batteries", "Textiles", "Oil", "Hazardous"
+  "Paper",
+  "Plastic",
+  "Metal",
+  "Glass",
+  "Electronic",
+  "Organic",
+  "Cardboard",
+  "Batteries",
+  "Textiles",
+  "Oil",
+  "Hazardous",
 ];
 
 const SERVICES = [
-  "Collection", "Processing", "Recycling", "Sorting", "Drop-off", 
-  "Pickup Service", "Composting", "Shredding", "Disposal"
+  "Collection",
+  "Processing",
+  "Recycling",
+  "Sorting",
+  "Drop-off",
+  "Pickup Service",
+  "Composting",
+  "Shredding",
+  "Disposal",
 ];
 
 export default function AdminFacilities() {
@@ -30,7 +67,9 @@ export default function AdminFacilities() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [facilities, setFacilities] = useState<EcoLocation[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingFacility, setEditingFacility] = useState<EcoLocation | null>(null);
+  const [editingFacility, setEditingFacility] = useState<EcoLocation | null>(
+    null,
+  );
   const { toast } = useToast();
 
   // Form state
@@ -43,14 +82,14 @@ export default function AdminFacilities() {
     contact: "",
     coordinates: { lat: "", lng: "" },
     services: [] as string[],
-    wasteTypes: [] as string[]
+    wasteTypes: [] as string[],
   });
 
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 1024);
     };
-    
+
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -60,31 +99,31 @@ export default function AdminFacilities() {
   useEffect(() => {
     const savedFacilities = localStorage.getItem("admin-facilities");
     const adminFacilities = savedFacilities ? JSON.parse(savedFacilities) : [];
-    
+
     // Include existing ECO_LOCATIONS as read-only entries
-    const existingFacilities = ECO_LOCATIONS.map(location => ({ 
-      ...location, 
-      isReadOnly: true 
+    const existingFacilities = ECO_LOCATIONS.map((location) => ({
+      ...location,
+      isReadOnly: true,
     }));
-    
+
     setFacilities([...existingFacilities, ...adminFacilities]);
   }, []);
 
   // Listen for coordinate selection from EcoMap
   useEffect(() => {
     const handleStorageChange = () => {
-      const selectedCoords = localStorage.getItem('selected-coordinates');
+      const selectedCoords = localStorage.getItem("selected-coordinates");
       if (selectedCoords) {
         const coords = JSON.parse(selectedCoords);
-        setFormData(prev => ({
+        setFormData((prev) => ({
           ...prev,
           coordinates: {
             lat: coords[0].toString(),
-            lng: coords[1].toString()
-          }
+            lng: coords[1].toString(),
+          },
         }));
         // Clear the stored coordinates
-        localStorage.removeItem('selected-coordinates');
+        localStorage.removeItem("selected-coordinates");
         toast({
           title: "Coordinates Updated",
           description: `Location set to ${coords[0].toFixed(6)}, ${coords[1].toFixed(6)}`,
@@ -96,28 +135,31 @@ export default function AdminFacilities() {
     handleStorageChange();
 
     // Listen for storage events (from other tabs)
-    window.addEventListener('storage', handleStorageChange);
-    
+    window.addEventListener("storage", handleStorageChange);
+
     // Also listen for focus events (when returning from map tab)
-    window.addEventListener('focus', handleStorageChange);
+    window.addEventListener("focus", handleStorageChange);
 
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('focus', handleStorageChange);
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("focus", handleStorageChange);
     };
   }, [toast]);
 
   // Save facilities to localStorage (only admin-added ones)
   const saveFacilities = (newFacilities: EcoLocation[]) => {
     // Separate existing and admin facilities
-    const existingFacilities = ECO_LOCATIONS.map(location => ({ 
-      ...location, 
-      isReadOnly: true 
+    const existingFacilities = ECO_LOCATIONS.map((location) => ({
+      ...location,
+      isReadOnly: true,
     }));
-    const adminOnlyFacilities = newFacilities.filter(f => !f.isReadOnly);
-    
+    const adminOnlyFacilities = newFacilities.filter((f) => !f.isReadOnly);
+
     setFacilities([...existingFacilities, ...adminOnlyFacilities]);
-    localStorage.setItem("admin-facilities", JSON.stringify(adminOnlyFacilities));
+    localStorage.setItem(
+      "admin-facilities",
+      JSON.stringify(adminOnlyFacilities),
+    );
   };
 
   const resetForm = () => {
@@ -130,28 +172,33 @@ export default function AdminFacilities() {
       contact: "",
       coordinates: { lat: "", lng: "" },
       services: [],
-      wasteTypes: []
+      wasteTypes: [],
     });
     setEditingFacility(null);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.name || !formData.category || !formData.address || !formData.district) {
+
+    if (
+      !formData.name ||
+      !formData.category ||
+      !formData.address ||
+      !formData.district
+    ) {
       toast({
         title: "Error",
         description: "Please fill in all required fields",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
 
     if (!formData.coordinates.lat || !formData.coordinates.lng) {
       toast({
-        title: "Error", 
+        title: "Error",
         description: "Please provide valid coordinates",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -160,29 +207,32 @@ export default function AdminFacilities() {
       id: editingFacility?.id || `admin_${Date.now()}`,
       name: formData.name,
       category: formData.category,
-      coordinates: [parseFloat(formData.coordinates.lat), parseFloat(formData.coordinates.lng)],
+      coordinates: [
+        parseFloat(formData.coordinates.lat),
+        parseFloat(formData.coordinates.lng),
+      ],
       address: formData.address,
       district: formData.district,
       hours: formData.hours || "Contact for hours",
       contact: formData.contact,
       services: formData.services,
-      wasteTypes: formData.wasteTypes
+      wasteTypes: formData.wasteTypes,
     };
 
     if (editingFacility) {
-      const updatedFacilities = facilities.map(f => 
-        f.id === editingFacility.id ? facilityData : f
+      const updatedFacilities = facilities.map((f) =>
+        f.id === editingFacility.id ? facilityData : f,
       );
       saveFacilities(updatedFacilities);
       toast({
         title: "Success",
-        description: "Facility updated successfully"
+        description: "Facility updated successfully",
       });
     } else {
       saveFacilities([...facilities, facilityData]);
       toast({
-        title: "Success", 
-        description: "Facility added successfully"
+        title: "Success",
+        description: "Facility added successfully",
       });
     }
 
@@ -195,11 +245,11 @@ export default function AdminFacilities() {
       toast({
         title: "Cannot Edit",
         description: "This is a system facility and cannot be modified",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
-    
+
     setEditingFacility(facility);
     setFormData({
       name: facility.name,
@@ -210,46 +260,49 @@ export default function AdminFacilities() {
       contact: facility.contact || "",
       coordinates: {
         lat: facility.coordinates[0].toString(),
-        lng: facility.coordinates[1].toString()
+        lng: facility.coordinates[1].toString(),
       },
       services: facility.services,
-      wasteTypes: facility.wasteTypes
+      wasteTypes: facility.wasteTypes,
     });
     setIsDialogOpen(true);
   };
 
   const handleDelete = (id: string) => {
-    const facilityToDelete = facilities.find(f => f.id === id);
+    const facilityToDelete = facilities.find((f) => f.id === id);
     if (facilityToDelete?.isReadOnly) {
       toast({
         title: "Cannot Delete",
         description: "This is a system facility and cannot be deleted",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
-    
-    const updatedFacilities = facilities.filter(f => f.id !== id);
+
+    const updatedFacilities = facilities.filter((f) => f.id !== id);
     saveFacilities(updatedFacilities);
     toast({
       title: "Success",
-      description: "Facility deleted successfully"
+      description: "Facility deleted successfully",
     });
   };
 
-  const handleArrayInput = (field: 'services' | 'wasteTypes', value: string) => {
+  const handleArrayInput = (
+    field: "services" | "wasteTypes",
+    value: string,
+  ) => {
     if (value && !formData[field].includes(value)) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        [field]: [...prev[field], value]
+        [field]: [...prev[field], value],
       }));
     }
   };
 
-  const removeArrayItem = (field: 'services' | 'wasteTypes', item: string) => {
-    setFormData(prev => ({
+  const removeArrayItem = (field: "services" | "wasteTypes", item: string) => {
+    setFormData((prev) => ({
       ...prev,
-      [field]: prev[field].filter(i => i !== item)
+      [field]: prev[field].filter((i) => i !== item),
     }));
   };
 
@@ -310,7 +363,12 @@ export default function AdminFacilities() {
                         <Input
                           id="name"
                           value={formData.name}
-                          onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              name: e.target.value,
+                            }))
+                          }
                           placeholder="Enter facility name"
                           required
                         />
@@ -319,17 +377,24 @@ export default function AdminFacilities() {
                         <Label htmlFor="category">Category *</Label>
                         <Select
                           value={formData.category}
-                          onValueChange={(value) => setFormData(prev => ({ ...prev, category: value as keyof typeof ECO_CATEGORIES }))}
+                          onValueChange={(value) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              category: value as keyof typeof ECO_CATEGORIES,
+                            }))
+                          }
                         >
                           <SelectTrigger>
                             <SelectValue placeholder="Select category" />
                           </SelectTrigger>
                           <SelectContent>
-                            {Object.entries(ECO_CATEGORIES).map(([key, category]) => (
-                              <SelectItem key={key} value={key}>
-                                {category.icon} {category.name}
-                              </SelectItem>
-                            ))}
+                            {Object.entries(ECO_CATEGORIES).map(
+                              ([key, category]) => (
+                                <SelectItem key={key} value={key}>
+                                  {category.icon} {category.name}
+                                </SelectItem>
+                              ),
+                            )}
                           </SelectContent>
                         </Select>
                       </div>
@@ -340,7 +405,12 @@ export default function AdminFacilities() {
                       <Input
                         id="address"
                         value={formData.address}
-                        onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            address: e.target.value,
+                          }))
+                        }
                         placeholder="Enter full address"
                         required
                       />
@@ -351,13 +421,18 @@ export default function AdminFacilities() {
                         <Label htmlFor="district">District *</Label>
                         <Select
                           value={formData.district}
-                          onValueChange={(value) => setFormData(prev => ({ ...prev, district: value }))}
+                          onValueChange={(value) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              district: value,
+                            }))
+                          }
                         >
                           <SelectTrigger>
                             <SelectValue placeholder="Select district" />
                           </SelectTrigger>
                           <SelectContent>
-                            {BRUNEI_DISTRICTS.map(district => (
+                            {BRUNEI_DISTRICTS.map((district) => (
                               <SelectItem key={district} value={district}>
                                 {district}
                               </SelectItem>
@@ -370,7 +445,12 @@ export default function AdminFacilities() {
                         <Input
                           id="contact"
                           value={formData.contact}
-                          onChange={(e) => setFormData(prev => ({ ...prev, contact: e.target.value }))}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              contact: e.target.value,
+                            }))
+                          }
                           placeholder="+673 xxx xxxx"
                         />
                       </div>
@@ -381,7 +461,12 @@ export default function AdminFacilities() {
                       <Input
                         id="hours"
                         value={formData.hours}
-                        onChange={(e) => setFormData(prev => ({ ...prev, hours: e.target.value }))}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            hours: e.target.value,
+                          }))
+                        }
                         placeholder="e.g., Mon-Fri: 8:00 AM - 5:00 PM"
                       />
                     </div>
@@ -395,10 +480,15 @@ export default function AdminFacilities() {
                             type="number"
                             step="any"
                             value={formData.coordinates.lat}
-                            onChange={(e) => setFormData(prev => ({ 
-                              ...prev, 
-                              coordinates: { ...prev.coordinates, lat: e.target.value }
-                            }))}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                coordinates: {
+                                  ...prev.coordinates,
+                                  lat: e.target.value,
+                                },
+                              }))
+                            }
                             placeholder="4.5353"
                             required
                           />
@@ -410,10 +500,15 @@ export default function AdminFacilities() {
                             type="number"
                             step="any"
                             value={formData.coordinates.lng}
-                            onChange={(e) => setFormData(prev => ({ 
-                              ...prev, 
-                              coordinates: { ...prev.coordinates, lng: e.target.value }
-                            }))}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                coordinates: {
+                                  ...prev.coordinates,
+                                  lng: e.target.value,
+                                },
+                              }))
+                            }
                             placeholder="114.7277"
                             required
                           />
@@ -423,26 +518,33 @@ export default function AdminFacilities() {
                         <Button
                           type="button"
                           variant="outline"
-                          onClick={() => window.open('/eco-map?select-coords=true', '_blank')}
+                          onClick={() =>
+                            navigate("/eco-map?select-coords=true#/eco-map")
+                          }
                           className="w-full"
                         >
                           <MapPin className="w-4 h-4 mr-2" />
                           Select Coordinates on Map
                         </Button>
                         <p className="text-xs text-gray-500 mt-2">
-                          Click to open EcoMap, then click anywhere on the map to get coordinates
+                          Click to open EcoMap, then click anywhere on the map
+                          to get coordinates
                         </p>
                       </div>
                     </div>
 
                     <div>
                       <Label>Services</Label>
-                      <Select onValueChange={(value) => handleArrayInput('services', value)}>
+                      <Select
+                        onValueChange={(value) =>
+                          handleArrayInput("services", value)
+                        }
+                      >
                         <SelectTrigger>
                           <SelectValue placeholder="Add services" />
                         </SelectTrigger>
                         <SelectContent>
-                          {SERVICES.map(service => (
+                          {SERVICES.map((service) => (
                             <SelectItem key={service} value={service}>
                               {service}
                             </SelectItem>
@@ -450,12 +552,14 @@ export default function AdminFacilities() {
                         </SelectContent>
                       </Select>
                       <div className="flex flex-wrap gap-2 mt-2">
-                        {formData.services.map(service => (
+                        {formData.services.map((service) => (
                           <Badge key={service} variant="secondary">
                             {service}
                             <button
                               type="button"
-                              onClick={() => removeArrayItem('services', service)}
+                              onClick={() =>
+                                removeArrayItem("services", service)
+                              }
                               className="ml-2 text-red-500"
                             >
                               ×
@@ -467,12 +571,16 @@ export default function AdminFacilities() {
 
                     <div>
                       <Label>Waste Types</Label>
-                      <Select onValueChange={(value) => handleArrayInput('wasteTypes', value)}>
+                      <Select
+                        onValueChange={(value) =>
+                          handleArrayInput("wasteTypes", value)
+                        }
+                      >
                         <SelectTrigger>
                           <SelectValue placeholder="Add waste types" />
                         </SelectTrigger>
                         <SelectContent>
-                          {WASTE_TYPES.map(type => (
+                          {WASTE_TYPES.map((type) => (
                             <SelectItem key={type} value={type}>
                               {type}
                             </SelectItem>
@@ -480,12 +588,14 @@ export default function AdminFacilities() {
                         </SelectContent>
                       </Select>
                       <div className="flex flex-wrap gap-2 mt-2">
-                        {formData.wasteTypes.map(type => (
+                        {formData.wasteTypes.map((type) => (
                           <Badge key={type} variant="secondary">
                             {type}
                             <button
                               type="button"
-                              onClick={() => removeArrayItem('wasteTypes', type)}
+                              onClick={() =>
+                                removeArrayItem("wasteTypes", type)
+                              }
                               className="ml-2 text-red-500"
                             >
                               ×
@@ -499,9 +609,9 @@ export default function AdminFacilities() {
                       <Button type="submit" className="green-primary">
                         {editingFacility ? "Update" : "Add"} Facility
                       </Button>
-                      <Button 
-                        type="button" 
-                        variant="outline" 
+                      <Button
+                        type="button"
+                        variant="outline"
                         onClick={() => setIsDialogOpen(false)}
                       >
                         Cancel
@@ -526,7 +636,10 @@ export default function AdminFacilities() {
                   <p className="text-gray-600 mb-4">
                     Start by adding your first eco-facility to the map
                   </p>
-                  <Button onClick={() => setIsDialogOpen(true)} className="green-primary">
+                  <Button
+                    onClick={() => setIsDialogOpen(true)}
+                    className="green-primary"
+                  >
                     <Plus className="h-4 w-4 mr-2" />
                     Add First Facility
                   </Button>
@@ -539,16 +652,21 @@ export default function AdminFacilities() {
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between">
                         <div>
-                          <CardTitle className="text-lg">{facility.name}</CardTitle>
+                          <CardTitle className="text-lg">
+                            {facility.name}
+                          </CardTitle>
                           <div className="flex flex-wrap gap-2 mt-2">
-                            <Badge 
-                              variant="secondary" 
-                              style={{ 
-                                backgroundColor: ECO_CATEGORIES[facility.category].color + '20',
-                                color: ECO_CATEGORIES[facility.category].color 
+                            <Badge
+                              variant="secondary"
+                              style={{
+                                backgroundColor:
+                                  ECO_CATEGORIES[facility.category].color +
+                                  "20",
+                                color: ECO_CATEGORIES[facility.category].color,
                               }}
                             >
-                              {ECO_CATEGORIES[facility.category].icon} {ECO_CATEGORIES[facility.category].name}
+                              {ECO_CATEGORIES[facility.category].icon}{" "}
+                              {ECO_CATEGORIES[facility.category].name}
                             </Badge>
                             {facility.isReadOnly && (
                               <Badge variant="outline" className="text-xs">
@@ -582,29 +700,43 @@ export default function AdminFacilities() {
                       <div className="flex items-start gap-2">
                         <MapPin className="h-4 w-4 text-gray-400 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="text-sm text-gray-900">{facility.address}</p>
-                          <p className="text-xs text-gray-500">{facility.district}</p>
+                          <p className="text-sm text-gray-900">
+                            {facility.address}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {facility.district}
+                          </p>
                         </div>
                       </div>
-                      
+
                       {facility.contact && (
                         <div className="flex items-center gap-2">
                           <Phone className="h-4 w-4 text-gray-400" />
-                          <span className="text-sm text-gray-600">{facility.contact}</span>
+                          <span className="text-sm text-gray-600">
+                            {facility.contact}
+                          </span>
                         </div>
                       )}
-                      
+
                       <div className="flex items-center gap-2">
                         <Clock className="h-4 w-4 text-gray-400" />
-                        <span className="text-sm text-gray-600">{facility.hours}</span>
+                        <span className="text-sm text-gray-600">
+                          {facility.hours}
+                        </span>
                       </div>
 
                       {facility.wasteTypes.length > 0 && (
                         <div>
-                          <p className="text-xs font-medium text-gray-500 mb-1">Waste Types:</p>
+                          <p className="text-xs font-medium text-gray-500 mb-1">
+                            Waste Types:
+                          </p>
                           <div className="flex flex-wrap gap-1">
-                            {facility.wasteTypes.slice(0, 3).map(type => (
-                              <Badge key={type} variant="outline" className="text-xs">
+                            {facility.wasteTypes.slice(0, 3).map((type) => (
+                              <Badge
+                                key={type}
+                                variant="outline"
+                                className="text-xs"
+                              >
                                 {type}
                               </Badge>
                             ))}

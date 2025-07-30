@@ -6,7 +6,8 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { ECO_CATEGORIES } from '@/lib/eco-map-data';
-import { MapPin, Filter, Settings, Eye, EyeOff } from 'lucide-react';
+import { MapPin, Filter, Settings, Eye, EyeOff, Plus, Edit, X } from 'lucide-react';
+import { useUser } from '@/contexts/UserContext';
 
 interface EcoMapControlsProps {
   visibleCategories: Set<string>;
@@ -18,6 +19,8 @@ interface EcoMapControlsProps {
   totalLocations: number;
   visibleLocations: number;
   isMobile?: boolean;
+  adminMode?: 'none' | 'add' | 'edit';
+  onAdminModeChange?: (mode: 'none' | 'add' | 'edit') => void;
 }
 
 export default function EcoMapControls({
@@ -29,9 +32,13 @@ export default function EcoMapControls({
   onLocationRequest,
   totalLocations,
   visibleLocations,
-  isMobile = false
+  isMobile = false,
+  adminMode = 'none',
+  onAdminModeChange
 }: EcoMapControlsProps) {
   const [isExpanded, setIsExpanded] = useState(!isMobile);
+  const { currentUser } = useUser();
+  const isAdmin = currentUser.role === 'Admin';
 
   return (
     <Card className={`${isMobile ? 'mb-4 backdrop-blur-sm bg-white/95' : 'w-80'} shadow-lg`}>
@@ -59,6 +66,52 @@ export default function EcoMapControls({
 
       {isExpanded && (
         <CardContent className={`space-y-${isMobile ? '4' : '6'} ${isMobile ? 'max-h-[40vh] overflow-y-auto' : ''}`}>
+          {/* Admin Controls */}
+          {isAdmin && (
+            <div className="space-y-2 border-b pb-4">
+              <Label className="text-sm font-medium">Admin Tools</Label>
+              <div className="flex gap-2">
+                <Button
+                  variant={adminMode === 'add' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => onAdminModeChange?.(adminMode === 'add' ? 'none' : 'add')}
+                  className={adminMode === 'add' ? 'green-primary' : ''}
+                >
+                  <Plus className="w-4 h-4 mr-1" />
+                  Add
+                </Button>
+                <Button
+                  variant={adminMode === 'edit' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => onAdminModeChange?.(adminMode === 'edit' ? 'none' : 'edit')}
+                  className={adminMode === 'edit' ? 'green-primary' : ''}
+                >
+                  <Edit className="w-4 h-4 mr-1" />
+                  Edit
+                </Button>
+                {adminMode !== 'none' && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onAdminModeChange?.('none')}
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                )}
+              </div>
+              {adminMode === 'add' && (
+                <div className="text-xs text-blue-600 bg-blue-50 p-2 rounded">
+                  Click anywhere on the map to add a new facility
+                </div>
+              )}
+              {adminMode === 'edit' && (
+                <div className="text-xs text-orange-600 bg-orange-50 p-2 rounded">
+                  Click on facility markers to edit or delete them
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Location Controls */}
           <div className="space-y-3">
             <Label className="text-sm font-medium flex items-center gap-2">

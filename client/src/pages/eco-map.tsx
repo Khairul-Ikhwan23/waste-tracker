@@ -4,6 +4,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import Sidebar from "@/components/dashboard/sidebar";
 import EcoMapControls from "@/components/eco-map/EcoMapControls";
 import LocationPopup from "@/components/eco-map/LocationPopup";
+import FacilityFormPopup from "@/components/eco-map/FacilityFormPopup";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -122,6 +123,10 @@ export default function EcoMap() {
   const [allLocations, setAllLocations] = useState<EcoLocation[]>(ECO_LOCATIONS);
   const [isSelectingCoords, setIsSelectingCoords] = useState(false);
   const [selectedCoords, setSelectedCoords] = useState<[number, number] | null>(null);
+  const [adminMode, setAdminMode] = useState<'none' | 'add' | 'edit'>('none');
+  const [showFacilityForm, setShowFacilityForm] = useState(false);
+  const [editingFacility, setEditingFacility] = useState<EcoLocation | null>(null);
+  const [formPosition, setFormPosition] = useState<{ x: number; y: number } | null>(null);
 
   const isMobile = useIsMobile();
   const { toast } = useToast();
@@ -248,36 +253,86 @@ export default function EcoMap() {
     return null;
   };
 
-  // Coordinate Selector Component
-  const CoordinateSelector = () => {
-    useMapEvents({
+  // Admin Map Click Handler
+  const AdminMapHandler = () => {
+    const map = useMapEvents({
       click: (e) => {
-        if (isSelectingCoords) {
+        if (adminMode === 'add') {
           const { lat, lng } = e.latlng;
+          const containerPoint = map.latLngToContainerPoint([lat, lng]);
           setSelectedCoords([lat, lng]);
-          // Store coordinates for admin-facilities form
-          localStorage.setItem('selected-coordinates', JSON.stringify([lat, lng]));
-          toast({
-            title: "Coordinates Selected",
-            description: `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`,
-          });
+          setFormPosition({ x: containerPoint.x, y: containerPoint.y });
+          setShowFacilityForm(true);
+          setEditingFacility(null);
         }
       },
     });
     return null;
   };
 
-  // Check if we're in coordinate selection mode
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('select-coords') === 'true') {
-      setIsSelectingCoords(true);
-      toast({
-        title: "Coordinate Selection Mode",
-        description: "Click anywhere on the map to select coordinates",
-      });
+  // Handle facility marker clicks in edit mode
+  const handleFacilityClick = (facility: EcoLocation) => {
+    if (adminMode === 'edit') {
+      if (facility.isReadOnly) {
+        toast({
+          title: "Cannot Edit",
+          description: "This is a system facility and cannot be modified",
+          variant: "destructive"
+        });
+        return;
+      }
+      setEditingFacility(facility);
+      setShowFacilityForm(true);
     }
-  }, []);
+  };
+
+  // Handle facility save
+  const handleFacilitySave = (facilityData: Omit<EcoLocation, 'id'>) => {
+    if (editingFacility) {
+      // Update existing facility
+      const updatedFacilities = allLocations.map(f => 
+        f.id === editingFacility.id 
+          ? { ...facilityData, id: editingFacility.id }
+          : f
+      );
+      setAllLocations(updatedFacilities);
+      
+      // Update admin facilities in localStorage
+      const adminFacilities = updatedFacilities.filter(f => !f.isReadOnly);
+      localStorage.setItem("admin-facilities", JSON.stringify(adminFacilities));
+    } else {
+      // Add new facility
+      const newFacility: EcoLocation = {
+        ...facilityData,
+        id: `admin-${Date.now()}`,
+      };
+      const updatedFacilities = [...allLocations, newFacility];
+      setAllLocations(updatedFacilities);
+      
+      // Update admin facilities in localStorage
+      const adminFacilities = updatedFacilities.filter(f => !f.isReadOnly);
+      localStorage.setItem("admin-facilities", JSON.stringify(adminFacilities));
+    }
+    
+    setShowFacilityForm(false);
+    setEditingFacility(null);
+    setSelectedCoords(null);
+    setAdminMode('none');
+  };
+
+  // Handle facility delete
+  const handleFacilityDelete = (id: string) => {
+    const updatedFacilities = allLocations.filter(f => f.id !== id);
+    setAllLocations(updatedFacilities);
+    
+    // Update admin facilities in localStorage
+    const adminFacilities = updatedFacilities.filter(f => !f.isReadOnly);
+    localStorage.setItem("admin-facilities", JSON.stringify(adminFacilities));
+    
+    setShowFacilityForm(false);
+    setEditingFacility(null);
+    setAdminMode('none');
+  };
 
   // Load CSS for Leaflet
   useEffect(() => {
@@ -394,7 +449,7 @@ export default function EcoMap() {
                 zoomControl={false}
               >
                 <MapController center={mapCenter} zoom={mapZoom} />
-                <CoordinateSelector />
+                <AdminMapHandler />
                 <TileLayer
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -466,6 +521,8 @@ export default function EcoMap() {
                   totalLocations={allLocations.length}
                   visibleLocations={filteredLocations.length}
                   isMobile={true}
+                  adminMode={adminMode}
+                  onAdminModeChange={setAdminMode}
                 />
               </div>
             </div>
@@ -483,6 +540,8 @@ export default function EcoMap() {
                   totalLocations={allLocations.length}
                   visibleLocations={filteredLocations.length}
                   isMobile={false}
+                  adminMode={adminMode}
+                  onAdminModeChange={setAdminMode}
                 />
               </div>
 
@@ -500,7 +559,7 @@ export default function EcoMap() {
                   style={{ height: "100%", width: "100%" }}
                 >
                   <MapController center={mapCenter} zoom={mapZoom} />
-                  <CoordinateSelector />
+                  <AdminMapHandler />
                   <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -549,6 +608,9 @@ export default function EcoMap() {
                       key={location.id}
                       position={location.coordinates}
                       icon={createCustomIcon(location.category)}
+                      eventHandlers={{
+                        click: () => handleFacilityClick(location),
+                      }}
                     >
                       <Popup maxWidth={320} minWidth={300}>
                         <LocationPopup
@@ -563,6 +625,21 @@ export default function EcoMap() {
             </div>
           )}
         </main>
+
+        {/* Facility Form Popup */}
+        <FacilityFormPopup
+          isOpen={showFacilityForm}
+          onClose={() => {
+            setShowFacilityForm(false);
+            setEditingFacility(null);
+            setSelectedCoords(null);
+          }}
+          position={formPosition}
+          coordinates={selectedCoords}
+          editingFacility={editingFacility}
+          onSave={handleFacilitySave}
+          onDelete={handleFacilityDelete}
+        />
       </div>
     </div>
   );
