@@ -146,6 +146,7 @@ export default function FacilityFormPopup({
     <div 
       className="fixed inset-0 bg-black bg-opacity-50 z-[2000] flex items-center justify-center p-4"
       onClick={onClose}
+      style={{ zIndex: 2000 }}
     >
       <Card 
         className={`w-full bg-white shadow-xl ${
@@ -191,7 +192,11 @@ export default function FacilityFormPopup({
                   <SelectTrigger>
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent 
+                    className="z-[3000]" 
+                    position="popper"
+                    sideOffset={4}
+                  >
                     {Object.entries(ECO_CATEGORIES).map(([key, category]) => (
                       <SelectItem key={key} value={key}>
                         {category.icon} {category.name}
@@ -223,7 +228,11 @@ export default function FacilityFormPopup({
                 <SelectTrigger>
                   <SelectValue placeholder="Select district" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent 
+                  className="z-[3000]" 
+                  position="popper"
+                  sideOffset={4}
+                >
                   {BRUNEI_DISTRICTS.map(district => (
                     <SelectItem key={district} value={district}>
                       {district}
