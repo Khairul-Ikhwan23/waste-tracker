@@ -117,6 +117,18 @@ The application follows a full-stack monorepo architecture with clear separation
   - Enhanced mobile header layout with proper button sizing and text truncation
   - Implemented comprehensive CSS rules to prevent viewport overflow on mobile devices
 
+- July 30, 2025: EcoMap Implementation
+  - Created comprehensive EcoMap page with interactive map centered on Brunei Darussalam
+  - Implemented Leaflet-based mapping system with custom markers for different facility categories
+  - Added authentic Brunei location data including recycling centers, drop-off points, and collection facilities
+  - Created modular map controls with category filtering and proximity radius adjustments
+  - Implemented user location detection with geolocation API integration
+  - Added responsive design with mobile-optimized map controls and popups
+  - Built LocationPopup component with facility details, contact info, and directions
+  - Structured codebase for easy API integration with separate data and UI modules
+  - Added EcoMap to navigation sidebar and role permissions for all user types
+  - Fixed hamburger button consistency across all mobile pages for unified navigation
+
 ## Changelog
 
 - July 06, 2025. Initial setup

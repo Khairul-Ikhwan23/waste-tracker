@@ -14,6 +14,7 @@ import {
   History,
   Gift,
   CreditCard,
+  Map,
 } from "lucide-react";
 import Logo from "@assets/logo.png";
 import { Button } from "@/components/ui/button";
@@ -62,6 +63,7 @@ const getAllNavigationItems = () => [
     key: "pickup-history",
   },
   { name: "EcoRewards", icon: Gift, path: "/eco-rewards", key: "eco-rewards" },
+  { name: "EcoMap", icon: Map, path: "/eco-map", key: "eco-map" },
   { name: "Payments", icon: CreditCard, path: "/payments", key: "payments" },
   { name: "Settings", icon: Settings, path: "/settings", key: "settings" },
 ];
