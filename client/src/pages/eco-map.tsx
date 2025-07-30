@@ -364,7 +364,7 @@ export default function EcoMap() {
               </MapContainer>
 
               {/* Bottom Controls for Mobile */}
-              <div className="absolute bottom-4 left-4 right-4 z-[1000]">
+              <div className="absolute bottom-4 left-4 right-4 z-[1000] max-h-[60vh] overflow-y-auto">
                 <EcoMapControls
                   visibleCategories={visibleCategories}
                   onCategoryToggle={handleCategoryToggle}

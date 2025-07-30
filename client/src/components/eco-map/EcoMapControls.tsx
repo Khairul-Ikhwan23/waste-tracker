@@ -34,10 +34,10 @@ export default function EcoMapControls({
   const [isExpanded, setIsExpanded] = useState(!isMobile);
 
   return (
-    <Card className={`${isMobile ? 'mb-4' : 'w-80'} shadow-lg`}>
-      <CardHeader className="pb-3">
+    <Card className={`${isMobile ? 'mb-4 backdrop-blur-sm bg-white/95' : 'w-80'} shadow-lg`}>
+      <CardHeader className={`${isMobile ? 'pb-2' : 'pb-3'}`}>
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-lg">
+          <CardTitle className={`flex items-center gap-2 ${isMobile ? 'text-base' : 'text-lg'}`}>
             <Filter className="w-5 h-5 text-green-600" />
             Map Controls
           </CardTitle>
@@ -58,7 +58,7 @@ export default function EcoMapControls({
       </CardHeader>
 
       {isExpanded && (
-        <CardContent className="space-y-6">
+        <CardContent className={`space-y-${isMobile ? '4' : '6'} ${isMobile ? 'max-h-[40vh] overflow-y-auto' : ''}`}>
           {/* Location Controls */}
           <div className="space-y-3">
             <Label className="text-sm font-medium flex items-center gap-2">
