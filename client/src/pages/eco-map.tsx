@@ -123,7 +123,9 @@ export default function EcoMap() {
   const [allLocations, setAllLocations] = useState<EcoLocation[]>(ECO_LOCATIONS);
   const [isSelectingCoords, setIsSelectingCoords] = useState(false);
   const [selectedCoords, setSelectedCoords] = useState<[number, number] | null>(null);
-  const [adminMode, setAdminMode] = useState<'none' | 'add' | 'edit'>('none');
+  const [adminMode, setAdminMode] = useState<'none' | 'edit'>('none');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [facilityFilter, setFacilityFilter] = useState('all');
   const [showFacilityForm, setShowFacilityForm] = useState(false);
   const [editingFacility, setEditingFacility] = useState<EcoLocation | null>(null);
   const [formPosition, setFormPosition] = useState<{ x: number; y: number } | null>(null);
@@ -153,21 +155,32 @@ export default function EcoMap() {
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
-  // Filter locations based on visible categories and proximity
+  // Filter locations based on visible categories, proximity, search, and admin filters
   const filteredLocations = useMemo(() => {
-    let filtered = allLocations.filter((location) =>
-      visibleCategories.has(location.category),
-    );
-
-    if (userLocation) {
-      filtered = getLocationsWithinRadius(userLocation, proximityRadius);
-      filtered = filtered.filter((location) =>
-        visibleCategories.has(location.category),
-      );
-    }
-
-    return filtered;
-  }, [allLocations, visibleCategories, userLocation, proximityRadius]);
+    return allLocations.filter(location => {
+      const categoryVisible = visibleCategories.has(location.category);
+      
+      const withinProximity = !userLocation || 
+        calculateDistance(userLocation, location.coordinates) <= proximityRadius;
+      
+      // Search filter
+      const matchesSearch = !searchQuery || 
+        location.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        location.address.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      // Admin facility filter
+      let matchesFacilityFilter = true;
+      if (facilityFilter === 'editable') {
+        matchesFacilityFilter = !location.isReadOnly;
+      } else if (facilityFilter === 'system') {
+        matchesFacilityFilter = !!location.isReadOnly;
+      } else if (facilityFilter !== 'all') {
+        matchesFacilityFilter = location.category === facilityFilter;
+      }
+      
+      return categoryVisible && withinProximity && matchesSearch && matchesFacilityFilter;
+    });
+  }, [allLocations, visibleCategories, userLocation, proximityRadius, searchQuery, facilityFilter]);
 
   // Handle category toggle
   const handleCategoryToggle = (category: string) => {
@@ -253,20 +266,8 @@ export default function EcoMap() {
     return null;
   };
 
-  // Admin Map Click Handler
+  // Admin Map Click Handler - simplified since we removed add mode
   const AdminMapHandler = () => {
-    const map = useMapEvents({
-      click: (e) => {
-        if (adminMode === 'add') {
-          const { lat, lng } = e.latlng;
-          const containerPoint = map.latLngToContainerPoint([lat, lng]);
-          setSelectedCoords([lat, lng]);
-          setFormPosition({ x: containerPoint.x, y: containerPoint.y });
-          setShowFacilityForm(true);
-          setEditingFacility(null);
-        }
-      },
-    });
     return null;
   };
 
@@ -533,6 +534,10 @@ export default function EcoMap() {
                   isMobile={true}
                   adminMode={adminMode}
                   onAdminModeChange={setAdminMode}
+                  searchQuery={searchQuery}
+                  onSearchChange={setSearchQuery}
+                  facilityFilter={facilityFilter}
+                  onFacilityFilterChange={setFacilityFilter}
                 />
               </div>
             </div>
@@ -552,6 +557,10 @@ export default function EcoMap() {
                   isMobile={false}
                   adminMode={adminMode}
                   onAdminModeChange={setAdminMode}
+                  searchQuery={searchQuery}
+                  onSearchChange={setSearchQuery}
+                  facilityFilter={facilityFilter}
+                  onFacilityFilterChange={setFacilityFilter}
                 />
               </div>
 
