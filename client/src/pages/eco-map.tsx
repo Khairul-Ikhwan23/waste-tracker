@@ -271,8 +271,12 @@ export default function EcoMap() {
   };
 
   // Handle facility marker clicks in edit mode
-  const handleFacilityClick = (facility: EcoLocation) => {
+  const handleFacilityClick = (facility: EcoLocation, event?: any) => {
     if (adminMode === 'edit') {
+      if (event) {
+        event.stopPropagation();
+      }
+      
       if (facility.isReadOnly) {
         toast({
           title: "Cannot Edit",
@@ -281,7 +285,9 @@ export default function EcoMap() {
         });
         return;
       }
+      
       setEditingFacility(facility);
+      setFormPosition(null); // Always center on mobile by not setting position
       setShowFacilityForm(true);
     }
   };
@@ -609,7 +615,10 @@ export default function EcoMap() {
                       position={location.coordinates}
                       icon={createCustomIcon(location.category)}
                       eventHandlers={{
-                        click: () => handleFacilityClick(location),
+                        click: (e) => {
+                          e.originalEvent.stopPropagation();
+                          handleFacilityClick(location, e);
+                        },
                       }}
                     >
                       <Popup maxWidth={320} minWidth={300}>

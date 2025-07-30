@@ -140,19 +140,26 @@ export default function FacilityFormPopup({
 
   if (!isOpen) return null;
 
+  const isMobile = window.innerWidth < 768;
+
   return (
     <div 
       className="fixed inset-0 bg-black bg-opacity-50 z-[2000] flex items-center justify-center p-4"
       onClick={onClose}
     >
       <Card 
-        className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white"
+        className={`w-full bg-white ${
+          isMobile 
+            ? 'max-w-sm max-h-[85vh] mx-4' 
+            : 'max-w-lg max-h-[80vh]'
+        } overflow-y-auto`}
         onClick={(e) => e.stopPropagation()}
-        style={position ? {
+        style={!isMobile && position ? {
           position: 'fixed',
-          left: Math.min(position.x - 200, window.innerWidth - 500),
-          top: Math.min(position.y - 100, window.innerHeight - 400),
-          transform: 'none'
+          left: Math.min(Math.max(position.x - 200, 20), window.innerWidth - 420),
+          top: Math.min(Math.max(position.y - 100, 20), window.innerHeight - 500),
+          transform: 'none',
+          maxWidth: '400px'
         } : {}}
       >
         <CardHeader className="flex flex-row items-center justify-between">
@@ -164,9 +171,9 @@ export default function FacilityFormPopup({
           </Button>
         </CardHeader>
 
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <CardContent className="p-4">
+          <form onSubmit={handleSubmit} className="space-y-3">
+            <div className="grid grid-cols-1 gap-3">
               <div>
                 <Label htmlFor="name">Facility Name *</Label>
                 <Input
@@ -213,36 +220,34 @@ export default function FacilityFormPopup({
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="district">District *</Label>
-                <Select
-                  value={formData.district}
-                  onValueChange={(value) => setFormData(prev => ({ ...prev, district: value }))}
-                  required
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select district" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {BRUNEI_DISTRICTS.map(district => (
-                      <SelectItem key={district} value={district}>
-                        {district}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+            <div>
+              <Label htmlFor="district">District *</Label>
+              <Select
+                value={formData.district}
+                onValueChange={(value) => setFormData(prev => ({ ...prev, district: value }))}
+                required
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select district" />
+                </SelectTrigger>
+                <SelectContent>
+                  {BRUNEI_DISTRICTS.map(district => (
+                    <SelectItem key={district} value={district}>
+                      {district}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-              <div>
-                <Label htmlFor="contact">Contact</Label>
-                <Input
-                  id="contact"
-                  value={formData.contact}
-                  onChange={(e) => setFormData(prev => ({ ...prev, contact: e.target.value }))}
-                  placeholder="+673 xxx xxxx"
-                />
-              </div>
+            <div>
+              <Label htmlFor="contact">Contact</Label>
+              <Input
+                id="contact"
+                value={formData.contact}
+                onChange={(e) => setFormData(prev => ({ ...prev, contact: e.target.value }))}
+                placeholder="+673 xxx xxxx"
+              />
             </div>
 
             <div>
@@ -257,10 +262,11 @@ export default function FacilityFormPopup({
             </div>
 
             <div>
-              <Label>Services</Label>
-              <div className="flex gap-2 mb-2">
+              <Label className="text-sm">Services</Label>
+              <div className="space-y-2">
                 <Input
-                  placeholder="Add service..."
+                  placeholder="Add service and press Enter..."
+                  className="text-sm"
                   onKeyPress={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault();
@@ -269,26 +275,27 @@ export default function FacilityFormPopup({
                     }
                   }}
                 />
-              </div>
-              <div className="flex flex-wrap gap-1">
-                {formData.services.map(service => (
-                  <Badge 
-                    key={service} 
-                    variant="secondary"
-                    className="cursor-pointer"
-                    onClick={() => removeService(service)}
-                  >
-                    {service} ×
-                  </Badge>
-                ))}
+                <div className="flex flex-wrap gap-1">
+                  {formData.services.map(service => (
+                    <Badge 
+                      key={service} 
+                      variant="secondary"
+                      className="cursor-pointer text-xs"
+                      onClick={() => removeService(service)}
+                    >
+                      {service} ×
+                    </Badge>
+                  ))}
+                </div>
               </div>
             </div>
 
             <div>
-              <Label>Waste Types</Label>
-              <div className="flex gap-2 mb-2">
+              <Label className="text-sm">Waste Types</Label>
+              <div className="space-y-2">
                 <Input
-                  placeholder="Add waste type..."
+                  placeholder="Add waste type and press Enter..."
+                  className="text-sm"
                   onKeyPress={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault();
@@ -297,41 +304,41 @@ export default function FacilityFormPopup({
                     }
                   }}
                 />
-              </div>
-              <div className="flex flex-wrap gap-1">
-                {formData.wasteTypes.map(type => (
-                  <Badge 
-                    key={type} 
-                    variant="outline"
-                    className="cursor-pointer"
-                    onClick={() => removeWasteType(type)}
-                  >
-                    {type} ×
-                  </Badge>
-                ))}
+                <div className="flex flex-wrap gap-1">
+                  {formData.wasteTypes.map(type => (
+                    <Badge 
+                      key={type} 
+                      variant="outline"
+                      className="cursor-pointer text-xs"
+                      onClick={() => removeWasteType(type)}
+                    >
+                      {type} ×
+                    </Badge>
+                  ))}
+                </div>
               </div>
             </div>
 
-            <div className="flex justify-between pt-4">
-              <div>
-                {editingFacility && !editingFacility.isReadOnly && (
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    onClick={handleDelete}
-                  >
-                    <Trash2 className="w-4 h-4 mr-2" />
-                    Delete
-                  </Button>
-                )}
-              </div>
+            <div className="flex flex-col gap-2 pt-3">
+              {editingFacility && !editingFacility.isReadOnly && (
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  onClick={handleDelete}
+                  className="w-full"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Delete Facility
+                </Button>
+              )}
               <div className="flex gap-2">
-                <Button type="button" variant="outline" onClick={onClose}>
+                <Button type="button" variant="outline" onClick={onClose} className="flex-1">
                   Cancel
                 </Button>
-                <Button type="submit" className="green-primary">
-                  <Save className="w-4 h-4 mr-2" />
-                  {editingFacility ? "Update" : "Add"} Facility
+                <Button type="submit" className="green-primary flex-1">
+                  <Save className="w-4 h-4 mr-1" />
+                  {editingFacility ? "Update" : "Add"}
                 </Button>
               </div>
             </div>
