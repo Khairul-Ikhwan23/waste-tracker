@@ -71,20 +71,6 @@ export default function RoutePlanner() {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      {/* Mobile Menu Toggle */}
-      {isMobile && (
-        <div className="fixed top-4 left-4 z-50 lg:hidden">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="bg-white shadow-md"
-          >
-            <Menu className="h-4 w-4" />
-          </Button>
-        </div>
-      )}
-
       {/* Sidebar */}
       <Sidebar 
         isOpen={isMobileMenuOpen} 
@@ -104,18 +90,26 @@ export default function RoutePlanner() {
       <div className="flex-1 lg:ml-0">
         {/* Header */}
         <header className="bg-white shadow-sm border-b border-gray-200">
-          <div className="px-4 sm:px-6 lg:px-8">
+          <div className="px-3 sm:px-6 lg:px-8">
             {/* Desktop Layout */}
-            <div className="hidden sm:flex items-center justify-between h-16">
-              <div className="flex items-center">
-                <div className="ml-12 lg:ml-0">
-                  <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">Route Planner</h1>
+            <div className="hidden sm:flex items-center justify-between min-h-16 py-2 sm:py-0">
+              <div className="flex items-center flex-1 min-w-0 pr-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setIsMobileMenuOpen(true)}
+                  className="lg:hidden mr-3 flex-shrink-0"
+                >
+                  <Menu className="h-5 w-5" />
+                </Button>
+                <div className="flex-1 min-w-0">
+                  <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 truncate">Route Planner</h1>
                   <p className="text-sm text-gray-600 mt-1">
                     Optimize pickup routes and manage collections
                   </p>
                 </div>
               </div>
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2 flex-shrink-0">
                 <Select value={selectedDistrict} onValueChange={setSelectedDistrict}>
                   <SelectTrigger className="w-48">
                     <SelectValue />
@@ -129,6 +123,7 @@ export default function RoutePlanner() {
                 </Select>
                 <Button 
                   onClick={handlePlanRoute}
+                  size="sm"
                   className="green-primary hover:bg-green-600 text-white"
                 >
                   <Navigation className="w-4 h-4 mr-2" />
@@ -139,9 +134,17 @@ export default function RoutePlanner() {
             
             {/* Mobile Layout */}
             <div className="sm:hidden py-4 space-y-3">
-              <div className="flex items-center">
-                <div className="ml-12">
-                  <h1 className="text-lg font-bold text-gray-900">Route Planner</h1>
+              <div className="flex items-center flex-1 min-w-0 pr-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setIsMobileMenuOpen(true)}
+                  className="mr-3 flex-shrink-0"
+                >
+                  <Menu className="h-5 w-5" />
+                </Button>
+                <div className="flex-1 min-w-0">
+                  <h1 className="text-lg font-bold text-gray-900 truncate">Route Planner</h1>
                   <p className="text-sm text-gray-600 mt-1">
                     Optimize routes
                   </p>

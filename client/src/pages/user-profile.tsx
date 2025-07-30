@@ -61,20 +61,6 @@ export default function UserProfile() {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      {/* Mobile Menu Toggle */}
-      {isMobile && (
-        <div className="fixed top-4 left-4 z-50 lg:hidden">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="bg-white shadow-md"
-          >
-            <Menu className="h-4 w-4" />
-          </Button>
-        </div>
-      )}
-
       {/* Sidebar */}
       <Sidebar 
         isOpen={isMobileMenuOpen} 
