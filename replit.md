@@ -1,4 +1,4 @@
-# SBNone Smart Waste Dashboard
+# Kitar360 Smart Waste Tracker
 
 ## Overview
 
@@ -90,9 +90,9 @@ The application follows a full-stack monorepo architecture with clear separation
 **Solution**: TanStack Query
 **Rationale**: Handles caching, background updates, and error states automatically
 
-## Recent Changes
+## Changelogs
 
-- January 08, 2025: Enhanced dashboard with Brunei-specific features and user role system
+- July 08, 2025: Enhanced dashboard with Brunei-specific features and user role system
   - Added Pickup Requests page with form validation and Brunei locations
   - Created Route Planner for optimizing waste collection routes
   - Built Recycling Metrics dashboard with performance tracking
@@ -106,7 +106,7 @@ The application follows a full-stack monorepo architecture with clear separation
   - Added mobile-optimized CSS classes for better accessibility
   - Integrated UserContext for state management across roles
 
-- July 19, 2025: Mobile responsiveness and functional improvements
+- July 20, 2025: Mobile responsiveness and functional improvements
   - Implemented Payments functionality with complete frontend page, backend API routes, and dummy transaction data
   - Added Kitar360 logo integration in sidebar header and created splash screen with 1-second slide-up animation
   - Fixed critical mobile responsiveness issues including horizontal scroll, header overflow, and container width constraints
@@ -117,7 +117,7 @@ The application follows a full-stack monorepo architecture with clear separation
   - Enhanced mobile header layout with proper button sizing and text truncation
   - Implemented comprehensive CSS rules to prevent viewport overflow on mobile devices
 
-- July 30, 2025: EcoMap Implementation
+- July 31, 2025: EcoMap Implementation
   - Created comprehensive EcoMap page with interactive map centered on Brunei Darussalam
   - Implemented Leaflet-based mapping system with custom markers for different facility categories
   - Added authentic Brunei location data including recycling centers, drop-off points, and collection facilities
@@ -128,11 +128,6 @@ The application follows a full-stack monorepo architecture with clear separation
   - Structured codebase for easy API integration with separate data and UI modules
   - Added EcoMap to navigation sidebar and role permissions for all user types
   - Fixed hamburger button consistency across all mobile pages for unified navigation
-
-## Changelog
-
-- July 06, 2025. Initial setup
-- January 08, 2025. Added Brunei-specific features and comprehensive dashboard pages
 
 ## User Preferences
 
