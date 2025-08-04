@@ -32,9 +32,17 @@ The application follows a full-stack monorepo architecture with clear separation
 - **Development**: Hot reload with Vite integration in development mode
 
 ### Database Schema
-- **Users Table**: Basic user management with username/password authentication
+- **Users Table**: Comprehensive user management with role-based access (household, business, waste_operator, admin)
+- **Facilities Table**: Recycling centers and eco-locations with geospatial data
+- **Pickup Requests Table**: Waste collection requests with scheduling and tracking
+- **Waste Collections Table**: Actual collection records with metrics and routing data
+- **Payments Table**: Financial transactions for pickup services and subscriptions
+- **Recycling Metrics Table**: Monthly/yearly statistics by district and waste type
+- **Environmental Reports Table**: Comprehensive environmental impact reports
+- **Notifications Table**: System notifications with priority levels and expiration
+- **EcoRewards Table**: Gamification points and achievements system
 - **Migrations**: Drizzle migrations stored in `/migrations` directory
-- **Schema Validation**: Zod integration for runtime type checking
+- **Schema Validation**: Zod integration with enum validation for all categorical fields
 
 ## Data Flow
 
@@ -128,6 +136,27 @@ The application follows a full-stack monorepo architecture with clear separation
   - Structured codebase for easy API integration with separate data and UI modules
   - Added EcoMap to navigation sidebar and role permissions for all user types
   - Fixed hamburger button consistency across all mobile pages for unified navigation
+
+- August 4, 2025: Mobile UI Fixes and Admin Facilities Enhancement
+  - Fixed toaster z-index issue to display notifications above map elements on mobile
+  - Redesigned Admin Facilities page to focus on editing and managing existing facilities
+  - Removed "Add Facility" button and implemented comprehensive search functionality
+  - Added category and district filtering for better facility management
+  - Enhanced mobile responsiveness for search and filter controls
+  - Implemented proper edit and delete functions for admin-created facilities
+  - Protected system facilities from modification with read-only status
+
+- August 4, 2025: Comprehensive Database Schema Design
+  - Expanded database schema with 9 comprehensive tables for complete waste management
+  - Implemented role-based user management with district-specific features
+  - Added facilities table with geospatial coordinates and service tracking
+  - Created pickup requests system with status tracking and operator assignment
+  - Built waste collections table for operational data and route optimization
+  - Designed recycling metrics table for performance monitoring by district and time
+  - Added environmental reports table for comprehensive impact analysis
+  - Implemented notifications system with priority levels and expiration handling
+  - Created EcoRewards gamification system for user engagement
+  - All tables include proper Zod validation schemas for type safety
 
 ## User Preferences
 
